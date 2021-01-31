@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+    "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rugbyaholic.techshare.common.UserRepository">
+	
+	<select id="identifyUser" parameterType="java.lang.String" resultMap="userDetails">
+	<![CDATA[
+		SELECT 	USERS.ID,
+				USERS.EMAIL,
+				USERS.AVF,
+				USERS.NAME,
+				USERS.PASSWORD,
+				USERS.LOCKED,
+				USERS.EXPIRED,
+				USER_ROLES.ROLE,
+				CODEMST.CODE_NM
+		FROM  	USERS
+		INNER JOIN
+				(
+		  			SELECT  USERS.ID,
+		          		    @RN := @RN + 1 AS RN
+		  			FROM    USERS,
+		         			(SELECT @RN := 0) RC
+		   			WHERE 	USERS.EMAIL  = #{email}
+		   			AND    	USERS.AVF   <= CURDATE()
+		   			ORDER BY
+		          			AVF DESC
+				) RC
+		ON     USERS.ID          = RC.ID
+		INNER JOIN USER_ROLES
+		ON     USER_ROLES.USER_ID = USERS.ID
+		INNER JOIN CODEMST
+		ON     CODEMST.CODE_ID   = 1
+		AND    CODEMST.CODE      = USER_ROLES.ROLE
+		WHERE  USERS.EMAIL       = #{email}
+		AND    RC.RN             = 1
+	]]>	
+	</select>
+	
+	<resultMap type="com.rugbyaholic.techshare.auth.AuthenticatedUser" id="userDetails">
+		<result property="id" column="ID" />
+		<result property="email" column="EMAIL" />
+		<result property="avf" column="AVF" />
+		<result property="username" column="NAME" />
+		<result property="password" column="PASSWORD" />
+		<result property="locked" column="LOCKED" />
+		<result property="expired" column="EXPIRED" />
+		<collection property="roles" ofType="java.lang.String">
+			<result column="CODE_NM" />
+		</collection>
+	</resultMap>
+	
+</mapper>

@@ -1,0 +1,43 @@
+@charset "UTF-8";
+.sidenav {
+	height: 100vh;
+	width: 240px;
+	position: fixed;
+	margin-left: -240px;
+	transition: all linear .3s;
+}
+.sidenav .profile-photo {
+	height: 96px;
+	width: 96px;
+	display: block;
+}
+.main {
+	position: relative;
+	transition: all linear .3s;
+}
+.visible-lt-md {
+	visibility: visible;
+}
+.visible-gt-lg {
+	visibility: hidden;
+}
+.nav-link:hover {
+	background: #cfcfcf;
+}
+@media(min-width: 992px) {
+	.sidenav {
+		margin-left: 0;
+	}
+	.main {
+		margin-left: 240px;
+	}
+	.sidenav-toggler {
+		display: none;
+	}
+	.visible-lt-md {
+		visibility: hidden;
+	}
+	.visible-gt-lg {
+		visibility: visible;
+	}
+}
