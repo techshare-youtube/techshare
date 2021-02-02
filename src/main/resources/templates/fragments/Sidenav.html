@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:fragment="sidenav">
+		<div class="sidenav bg-light">
+			<nav class="navbar navbar-dark text-light" style="background: darkred;">
+				<div class="container-fluid">
+					<a class="navbar-brand sidenav-toggler">
+						<i class="bi bi-chevron-left"></i>
+					</a>
+					<span class="navbar-brand visible-gt-lg">TechShare</span>
+				</div>
+			</nav>
+			<!-- ユーザ情報 -->
+			<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
+				<span th:text="*{username}">Username</span>
+				<!-- 画像 -->
+				<img class="profile-photo my-2" src="../static/img/anonymous.png" alt="Profile"
+					th:src="@{/img/anonymous.png}" />
+				<!-- E-Mail -->
+				<span>XXXXXX@mydomain.com</span>
+				<hr />
+				<div class="d-flex justify-content-between">
+					<a href="#" class="btn btn-primary btn-sm shadow-sm me-2">プロフィール編集</a>
+					<form th:action="@{/Logout.do}" method="post">
+						<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
+					</form>
+				</div>
+			</div>
+			<ul class="nav flex-column">
+				<li class="nav-item border-bottom">
+					<a href="#" class="nav-link text-dark py-3">ホーム</a>
+				</li>
+				<li class="nav-item border-bottom">
+					<a href="#" class="nav-link text-dark py-3">マスターメンテナンス</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
