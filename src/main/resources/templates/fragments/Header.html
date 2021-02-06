@@ -7,8 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div th:fragment="header">
-		<nav class="navbar navbar-dark text-light sticky-top bg-dark">
+	<div th:fragment="header" th:remove="tag">
+		<nav class="navbar navbar-dark text-light bg-dark sticky-top">
 			<div class="container-fluid">
 				<span class="navbar-brand visible-lt-md">TechShare</span>
 				<button type="button" class="btn sidenav-toggler text-light">

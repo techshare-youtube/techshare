@@ -1,9 +1,13 @@
 @charset "UTF-8";
+html, body {
+	height: 100%;
+	width: 100%;
+}
 .cover {
-	height: 100vh;
-	width: 100vw;
+	height: 100%;
+	width: 100%;
 	background: rgba(0,0,0,.5);
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	z-index: 2000;
@@ -26,9 +30,9 @@
 .sidenav.visible {
 	margin-left: 0;
 }
-.sidenav .profile-photo {
-	height: 96px;
-	width: 96px;
+.profile-photo {
+	height: 128px;
+	width: 128px;
 	display: block;
 }
 .main {
@@ -43,6 +47,17 @@
 }
 .nav-link:hover {
 	background: #cfcfcf;
+}
+.footer {
+	height: 3rem;
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #fff;
 }
 @media(min-width: 992px) {
 	.sidenav {
@@ -59,5 +74,8 @@
 	}
 	.visible-gt-lg {
 		visibility: visible;
+	}
+	.footer {
+		margin-left: 240px;
 	}
 }

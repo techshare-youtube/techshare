@@ -5,6 +5,21 @@
 
 <mapper namespace="com.rugbyaholic.techshare.common.UserRepository">
 	
+	<select id="createProfileEditForm" parameterType="java.lang.Long" 
+			resultType="com.rugbyaholic.techshare.auth.account.ProfileEditForm">
+	<![CDATA[
+		SELECT  ZIPCODE         AS zipcode,
+		        PREF            AS pref,
+		        CITY            AS city,
+		        BLDG            AS bldg,
+		        TELNO           AS phoneNo,
+		        MOBILE_NO       AS mobilePhoneNo,
+				USER_ID         AS userId
+		FROM    PERSONAL_INFO
+		WHERE   USER_ID      =  #{userId}
+	]]>
+	</select>
+	
 	<select id="identifyUser" parameterType="java.lang.String" resultMap="userDetails">
 	<![CDATA[
 		SELECT 	USERS.ID,
@@ -15,7 +30,11 @@
 				USERS.LOCKED,
 				USERS.EXPIRED,
 				USER_ROLES.ROLE,
-				CODEMST.CODE_NM
+				CODEMST.CODE_NM,
+				USERS.EMP_NO,
+        		USERS.PROFILE_IMG,
+        		DP.DEPT_NM,
+        		POS.POS_NM
 		FROM  	USERS
 		INNER JOIN
 				(
@@ -34,6 +53,26 @@
 		INNER JOIN CODEMST
 		ON     CODEMST.CODE_ID   = 1
 		AND    CODEMST.CODE      = USER_ROLES.ROLE
+		INNER JOIN DEPTS DP
+		ON      DP.DEPT_CD        = USERS.DEPT_CD
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    DEPTS
+		            WHERE   DEPTS.DEPT_CD    =  DP.DEPT_CD
+		            AND     DEPTS.AVF       <=  CURDATE()
+		            AND     DEPTS.AVF        >  DP.AVF
+		        )
+		INNER JOIN POSITIONS POS
+		ON      POS.POS_CD        = USERS.POS_CD
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    POSITIONS
+		            WHERE   POSITIONS.POS_CD     =  POS.POS_CD
+		            AND     POSITIONS.AVF       <=  CURDATE()
+		            AND     POSITIONS.AVF        >  POS.AVF
+		        )
 		WHERE  USERS.EMAIL       = #{email}
 		AND    RC.RN             = 1
 	]]>	
@@ -47,9 +86,39 @@
 		<result property="password" column="PASSWORD" />
 		<result property="locked" column="LOCKED" />
 		<result property="expired" column="EXPIRED" />
+		<!-- AS 2020.02.04 VOL007 -->
+		<result property="empNo" column="EMP_NO" />
+		<result property="deptName" column="DEPT_NM" />
+		<result property="posName" column="POS_NM" />
+		<association property="profileImage" javaType="com.rugbyaholic.techshare.common.ImageFile">
+			<result property="fileName" column="PROFILE_IMG" />
+		</association>
+		<!-- AE 2020.02.04 VOL007 -->
 		<collection property="roles" ofType="java.lang.String">
 			<result column="CODE_NM" />
 		</collection>
 	</resultMap>
+	
+	<update id="changeProfile" parameterType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
+	<![CDATA[
+		UPDATE  USERS
+		SET     PASSWORD     =  #{password},
+		        PROFILE_IMG  =  #{profileImage.fileName}
+		WHERE   ID           =  #{id}
+	]]>
+	</update>
+	
+	<update id="updatePersonalInfo" parameterType="com.rugbyaholic.techshare.auth.account.ProfileEditForm">
+	<![CDATA[
+		UPDATE  PERSONAL_INFO
+		SET     ZIPCODE      =  #{zipcode},
+		        PREF         =  #{pref},
+		        CITY         =  #{city},
+		        BLDG         =  #{bldg},
+		        TELNO        =  #{phoneNo},
+		        MOBILE_NO    =  #{mobilePhoneNo}
+		WHERE   USER_ID      =  #{userId}
+	]]>
+	</update>
 	
 </mapper>
