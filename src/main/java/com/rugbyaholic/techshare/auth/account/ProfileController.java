@@ -1,7 +1,5 @@
 package com.rugbyaholic.techshare.auth.account;
 
-import java.io.IOException;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class ProfileController {
 	private ProfileService profileService;
 	
 	@GetMapping("/profile/Profile.html")
-	public String onProfileEditRequested(@AuthenticationPrincipal AuthenticatedUser user,
+	public String onPageRequested(@AuthenticationPrincipal AuthenticatedUser user,
 											Model model) {
 		
 		ProfileEditForm form = profileService.providePersonalInfo(user);
@@ -37,7 +35,7 @@ public class ProfileController {
 	}
 	
 	@PostMapping("/profile/ProfileEdit.do")
-	public String editProfile(@Valid @ModelAttribute ProfileEditForm profileEditForm,
+	public String onProfileEditRequested(@Valid @ModelAttribute ProfileEditForm profileEditForm,
 								BindingResult bindingResult,
 								Model model,
 								@AuthenticationPrincipal AuthenticatedUser user) {
@@ -51,7 +49,7 @@ public class ProfileController {
 		
 		try {
 			profileService.editProfile(profileEditForm);
-		} catch (IllegalStateException | IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return "profile/Profile.html";
 		}

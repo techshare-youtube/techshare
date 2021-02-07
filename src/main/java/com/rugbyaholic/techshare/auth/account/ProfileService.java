@@ -1,7 +1,6 @@
 package com.rugbyaholic.techshare.auth.account;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ public class ProfileService {
 	public static final String PROFILE_IMAGE_DEST = "D:\\img\\00_profile\\";
 	
 	@Transactional(rollbackFor = Throwable.class)
-	public void editProfile(ProfileEditForm form) throws IllegalStateException, IOException {
+	public void editProfile(ProfileEditForm form) throws Exception {
 		
 		// DB登録用の画像ファイル名を生成
 		MultipartFile uploadFile = form.getUploadFile();
@@ -68,7 +67,7 @@ public class ProfileService {
 		form.setUserId(user.getId());
 		updateCount += repository.updatePersonalInfo(form);
 		
-		if (updateCount != 2) throw new IllegalStateException();
+		if (updateCount != 2) throw new Exception();
 	}
 	
 	public ProfileEditForm providePersonalInfo(AuthenticatedUser user) {
