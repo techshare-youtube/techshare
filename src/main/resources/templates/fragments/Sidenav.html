@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -18,12 +18,13 @@
 				</div>
 			</nav>
 			<!-- ユーザ情報 -->
-			<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
-				<span th:text="*{username}">Username</span>
+			<div class="container-fluid bg-secondary text-light py-3">
+				<span th:text="${#authentication.principal.username}">Username</span>
 				<!-- 画像 -->
-				<img class="profile-photo my-2" alt="Profile" th:src="*{profileImage.encodedString()}" />
+				<img class="profile-photo my-2" alt="Profile"
+					th:src="${#authentication.principal.profileImage.encodedString()}" />
 				<!-- E-Mail -->
-				<span th:text="*{email}">XXXXXX@mydomain.com</span>
+				<span th:text="${#authentication.principal.email}">XXXXXX@mydomain.com</span>
 				<hr />
 				<div class="d-flex justify-content-between">
 					<a th:href="@{/profile/Profile.html}" 
@@ -38,7 +39,7 @@
 					<a th:href="@{/}" class="nav-link text-dark py-3">ホーム</a>
 				</li>
 				<li class="nav-item border-bottom">
-					<a href="#" class="nav-link text-dark py-3">マスターメンテナンス</a>
+					<a th:href="@{/manage/users/UserList.html}" class="nav-link text-dark py-3">ユーザー管理</a>
 				</li>
 			</ul>
 		</div>

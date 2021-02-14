@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,6 +8,13 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 <link rel="stylesheet" href="../static/css/layout.css" th:href="@{/css/layout.css}">
+<link rel="stylesheet" href="../static/css/component.css" th:href="@{/css/component.css}">
+<link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="../static/js/common.js"></script>
+<script type="text/javascript" src="../static/js/components.js"></script>
+<script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 <title>画面レイアウト確認用HTML</title>
 </head>
 <body>
@@ -24,15 +32,15 @@
 		<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
 			<span th:text="*{username}">Username</span>
 			<!-- 画像 -->
-			<img class="profile-photo my-2" src="../static/img/anonymous.png" alt="Profile"
-				th:src="@{/img/anonymous.png}" />
+			<img class="profile-photo my-2" src="../static/img/anonymous.png"
+					alt="Profile" th:src="@{/img/anonymous.png}" />
 			<!-- E-Mail -->
 			<span>XXXXXX@mydomain.com</span>
 			<hr />
 			<div class="d-flex justify-content-between">
 				<a href="#" class="btn btn-primary btn-sm shadow-sm me-2">プロフィール編集</a>
 				<form th:action="@{/Logout.do}" method="post">
-					<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
+						<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
 				</form>
 			</div>
 		</div>
@@ -50,162 +58,107 @@
 			<div class="container-fluid">
 				<span class="navbar-brand visible-lt-md">TechShare</span>
 				<button type="button" class="btn sidenav-toggler text-light">
-					<i class="bi bi-three-dots-vertical"></i>
+						<i class="bi bi-three-dots-vertical"></i>
 				</button>
 			</div>
 		</nav>
-		<form action="" autocomplete="off">
-			<div class="container-fluid p-3 position-relative pb-5">
-				<div class="row g-3">
-					<div class="col col-12">
-						<h5 class="m-0 pb-2 mb-3 border-bottom">アカウント情報</h5>
-					</div>
+		<div class="content overflow-auto d-flex flex-column">
+			<div class="p-3">
+				<h4>ユーザ―情報一覧</h4>
+			</div>
+			<div class="bg-white sticky-top p-3">
+				<div class="text-end">
+					<a href="#" class="btn btn-primary btn-sm shadow-sm">
+						<span>ユーザー新規登録</span>
+					</a>
 				</div>
-				<div class="row gy-2">
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">社員番号</span>
+				<!-- 検索条件 -->
+				<form th:action="@{manage/user/UserSearch.do}" class="my-2">
+					<div class="d-flex align-items-between">
+						<h5 class="me-2">検索条件</h5>
+						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
+							<span class="d-none">[表示]</span>
+							<span>[隠す]</span>
+						</a>
 					</div>
-					<div class="col col-12 col-md-9">
-						<span>1997040100008</span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">氏名</span>
-					</div>
-					<div class="col col-12 col-md-9">
-						<span>サンプルユーザー</span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">所属部署</span>
-					</div>
-					<div class="col col-12 col-md-9">
-						<span>営業部営業課</span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">役職</span>
-					</div>
-					<div class="col col-12 col-md-9">
-						<span>一般</span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">プロフィール画像</span>
-					</div>
-					<div class="col col-12 col-md-9">
-						<div class="p-1 bg-secondary d-inline-block">
-							<img src="../static/img/anonymous.png" alt="" class="profile-photo" id="thumbnail"/>
+					<div id="searchCondition" class="collapse show">
+						<div class="border p-3 rounded">
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">社員番号</strong>
+								<input type="text" class="form-control form-control-sm" style="width: 10rem;" />
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">氏名</strong>
+								<input type="text" class="form-control form-control-sm" style="width: 16rem;" />
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">所属部署</strong>
+								<select class="form-select form-select-sm" style="width: 16rem;">
+									<option value="">-- 選択してください</option>
+								</select>
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">役職</strong>
+								<select class="form-select form-select-sm" style="width: 16rem;">
+									<option value="">-- 選択してください</option>
+								</select>
+							</div>
 						</div>
 					</div>
-					<div class="col col-12 col-md-3"></div>
-					<div class="col col-12 col-md-9">
-						<label for="photo-file" class="btn btn-secondary btn-sm shadow-sm">アップロード</label>
-						<input type="file" id="photo-file" name="profile-photo" class="d-none" accept="image/*" />
+					<div class="py-2">
+						<button class="btn btn-success btn-sm shadow-sm px-3">
+							<span>検索実行</span>
+						</button>
 					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">E-Mail</span>
+				</form>
+			</div>
+			<div class="pb-3 px-3 flex-grow-1 overflow-hidden" style="height: 100%">
+				<div class="table-fixed-header">
+					<table class="table table-sm table-striped m-0">
+						<col width="5%"/>
+						<col width="15%"/>
+						<col width="25%"/>
+						<col width="30%"/>
+						<col width="25%"/>
+						<thead>
+							<tr>
+								<th class="sticky-top bg-white text-truncate"></th>
+								<th class="sticky-top bg-white text-truncate">社員番号</th>
+								<th class="sticky-top bg-white text-truncate">氏名</th>
+								<th class="sticky-top bg-white text-truncate">所属部署</th>
+								<th class="sticky-top bg-white text-truncate">役職</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="text-truncate text-center">
+									<a class="text-dark" title="編集" href="#">
+										<i class="bi bi-pen"></i>
+									</a>
+								</td>
+								<td class="text-truncate">0000001</td>
+								<td class="text-truncate">John Doe</td>
+								<td class="text-truncate">0010001:Sales Management</td>
+								<td class="text-truncate">0001:Senior Manager</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="position-sticky top-100 start-0 py-2">
+						
 					</div>
-					<div class="col col-12 col-md-9">
-						<span>user@sample.co.jp</span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">パスワード</span>
-					</div>
-					<div class="col col-12 col-md-4">
-						<input id="password" type="password" class="form-control form-control-sm" placeholder="変更後のパスワード" />
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-					<div class="col col-12 col-md-3"></div>
-					<div class="col col-12 col-md-4">
-						<input type="password" class="form-control form-control-sm" placeholder="再入力" />
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-				</div>
-				<div class="row g-3">
-					<div class="col col-12">
-						<h5 class="m-0 pb-2 mb-3 border-bottom">個人情報</h5>
-					</div>
-				</div>
-				<div class="row gy-2">
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">郵便番号</span>
-					</div>
-					<div class="col col-12 col-md-4 d-flex">
-						<input id="zipcode" type="text" class="form-control form-control-sm" style="width: 7rem;" placeholder="ハイフンなし" />
-						<button type="button" id="search-address" class="btn btn-secondary btn-sm shadow-sm ms-2">住所検索</button>
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">住所</span>
-					</div>
-					<div class="col col-12 col-md-4">
-						<input id="pref" type="text" class="form-control form-control-sm" placeholder="都道府県" style="width: 10rem;" />
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-					<div class="col col-12 col-md-3"></div>
-					<div class="col col-12 col-md-4">
-						<input id="city" type="text" class="form-control form-control-sm" placeholder="市区町村"/>
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-					<div class="col col-12 col-md-3"></div>
-					<div class="col col-12 col-md-4">
-						<input type="text" class="form-control form-control-sm" placeholder="番地・建物"/>
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-					<div class="col col-12 col-md-3">
-						<span class="fw-bold">電話番号</span>
-					</div>
-					<div class="col col-12 col-md-4">
-						<input type="tel" class="form-control form-control-sm is-invalid bg-light" placeholder="自宅" />
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger">エラメッセージ</span>
-					</div>
-					<div class="col col-12 col-md-3"></div>
-					<div class="col col-12 col-md-4">
-						<input type="tel" class="form-control form-control-sm" placeholder="携帯" />
-					</div>
-					<div class="col col-12 col-md-4">
-						<span class="text-danger"></span>
-					</div>
-				</div>
-				<div class="footer px-3">
-					<span></span>
-					<button class="btn btn-success btn-sm shadow-sm">プロフィールを変更</button>
 				</div>
 			</div>
-		</form>
-	</div>
-	<!-- Toast -->
-	<div id="toast" class="position-absolute bg-white shadow-lg top-50 start-50 border px-2 translate-middle" style="width: 360px;">
-		<div class="py-2 d-flex border-bottom align-items-center">
-			<div class="bg-primary me-2" style="width: 1rem; height: 1rem;"></div>
-			<strong class="flex-grow-1">Information</strong>
-			<button id="toast-close" type="button" class="btn-close"></button>
-		</div>
-		<div class="py-2">
-			<span>message goes here.</span>
 		</div>
 	</div>
-	<!-- Scripts -->
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-	<script type="text/javascript" src="../static/js/common.js" th:src="@{/js/common.js}"></script>
 	<script type="text/javascript">
-		$(function() {
-			$(document).on('click', '#toast-close', function() {
-				$('#toast').addClass('d-none');
+	$(function() {
+		$(document).on('click', '#condition-toggler', function(e) {
+			e.preventDefault();
+			$(this).find('span').each(function(index, element) {
+				$(element).toggleClass('d-none');
 			});
 		});
+	});
 	</script>
 </body>
 </html>

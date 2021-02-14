@@ -8,7 +8,7 @@
 </head>
 <body>
 	<div th:fragment="header" th:remove="tag">
-		<nav class="navbar navbar-dark text-light bg-dark sticky-top">
+		<nav class="navbar navbar-dark text-light bg-dark">
 			<div class="container-fluid">
 				<span class="navbar-brand visible-lt-md">TechShare</span>
 				<button type="button" class="btn sidenav-toggler text-light">
@@ -16,6 +16,10 @@
 				</button>
 			</div>
 		</nav>
+	</div>
+	
+	<div th:fragment="caption" th:remove="tag">
+		<h1 th:if="${message}" th:text="${message}"></h1>
 	</div>
 </body>
 </html>

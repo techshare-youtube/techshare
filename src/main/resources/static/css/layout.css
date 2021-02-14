@@ -10,7 +10,7 @@ html, body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	z-index: 2000;
+	z-index: 1030;
 	display: none;
 }
 .cover.visible {
@@ -22,7 +22,7 @@ html, body {
 	position: fixed;
 	margin-left: -240px;
 	transition: all linear .3s;
-	z-index: 2010;
+	z-index: 1040;
 }
 .sidenav-toggler:hover {
 	cursor: pointer;
@@ -36,8 +36,12 @@ html, body {
 	display: block;
 }
 .main {
+	height: 100%;
 	position: relative;
 	transition: all linear .3s;
+}
+.main .content {
+	height: calc(100vh - 56px);
 }
 .visible-lt-md {
 	visibility: visible;
@@ -59,9 +63,16 @@ html, body {
 	justify-content: space-between;
 	background: #fff;
 }
-@media(min-width: 992px) {
+@media(min-width: 1200px) {
+	.cover {
+		z-index: 1020;
+	}
 	.sidenav {
 		margin-left: 0;
+		z-index: 1030;
+	}
+	.sidenav.slide-out {
+		margin-left: -240px;
 	}
 	.main {
 		margin-left: 240px;

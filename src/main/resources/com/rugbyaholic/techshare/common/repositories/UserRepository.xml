@@ -3,7 +3,7 @@
     "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.rugbyaholic.techshare.common.UserRepository">
+<mapper namespace="com.rugbyaholic.techshare.common.repositories.UserRepository">
 	
 	<select id="createProfileEditForm" parameterType="java.lang.Long" 
 			resultType="com.rugbyaholic.techshare.auth.account.ProfileEditForm">

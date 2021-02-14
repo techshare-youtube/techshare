@@ -16,6 +16,8 @@ var callbackFunction = function(data) {
 }
 
 $(function() {
+	// レイアウト調整	
+	
 	// サイドナビゲーション
 	$(document).on('click', '.sidenav-toggler, .cover', function() {
 		$('.sidenav').toggleClass('visible');

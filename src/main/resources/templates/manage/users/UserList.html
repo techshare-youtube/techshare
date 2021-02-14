@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>ユーザ―情報一覧</title>
+</head>
+<body>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main">
+		<div th:replace="fragments/Header :: header"></div>
+		<div class="content overflow-auto d-flex flex-column">
+			<div class="p-3">
+				<h4>ユーザ―情報一覧</h4>
+			</div>
+			<div class="bg-white sticky-top p-3">
+				<div class="text-end">
+					<a href="#" class="btn btn-primary btn-sm shadow-sm">
+						<span>ユーザー新規登録</span>
+					</a>
+				</div>
+				<!-- 検索条件 -->
+				<form th:action="@{manage/user/UserSearch.do}" class="my-2" th:object="${userSearchForm}">
+					<div class="d-flex align-items-between">
+						<h5 class="me-2">検索条件</h5>
+						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
+							<span class="d-none">[表示]</span>
+							<span>[隠す]</span>
+						</a>
+					</div>
+					<div id="searchCondition" class="collapse show">
+						<div class="border p-3 rounded">
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">社員番号</strong>
+								<input type="text" class="form-control form-control-sm" style="width: 10rem;"
+										th:field="*{empNo}" />
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">氏名</strong>
+								<input type="text" class="form-control form-control-sm" style="width: 16rem;"
+										th:field="*{name}" />
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">所属部署</strong>
+								<select class="form-select form-select-sm" style="width: 16rem;" th:field="*{deptCd}">
+									<option value="">-- 選択してください</option>
+									<option th:each="option : *{deptOptions}" th:value="${option.code}"
+											th:text="${option.name}"></option>
+								</select>
+							</div>
+							<div class="d-flex align-items-top mb-2">
+								<strong style="width: 10rem;">役職</strong>
+								<select class="form-select form-select-sm" style="width: 16rem;" th:field="*{posCd}">
+									<option value="">-- 選択してください</option>
+									<option th:each="option : *{posOptions}" th:value="${option.code}"
+											th:text="${option.name}"></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="py-2">
+						<button class="btn btn-success btn-sm shadow-sm px-3">
+							<span>検索実行</span>
+						</button>
+					</div>
+				</form>
+			</div>
+			<div class="pb-3 px-3 flex-grow-1 overflow-hidden" style="height: 100%">
+				<!-- 検索結果 -->
+				<div class="table-fixed-header">
+					<table class="table table-sm table-striped m-0">
+						<col width="5%"/>
+						<col width="15%"/>
+						<col width="25%"/>
+						<col width="30%"/>
+						<col width="25%"/>
+						<thead>
+							<tr>
+								<th class="sticky-top bg-white text-truncate"></th>
+								<th class="sticky-top bg-white text-truncate">社員番号</th>
+								<th class="sticky-top bg-white text-truncate">氏名</th>
+								<th class="sticky-top bg-white text-truncate">所属部署</th>
+								<th class="sticky-top bg-white text-truncate">役職</th>
+							</tr>
+						</thead>
+						<tbody>
+							
+						</tbody>
+					</table>
+					<div class="position-sticky top-100 start-0 py-2">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="fragments/Toast :: toast"></div>
+	<script type="text/javascript">
+	$(function() {
+		$(document).on('click', '#condition-toggler', function(e) {
+			e.preventDefault();
+			$(this).find('span').each(function(index, element) {
+				$(element).toggleClass('d-none');
+			});
+		});
+	});
+	</script>
+</body>
+</html>

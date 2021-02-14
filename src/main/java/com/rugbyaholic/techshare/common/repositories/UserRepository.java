@@ -1,4 +1,4 @@
-package com.rugbyaholic.techshare.common;
+package com.rugbyaholic.techshare.common.repositories;
 
 import java.util.Optional;
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
+import com.rugbyaholic.techshare.common.util.NotificationMessage;
 
 @Controller
 public class ProfileController {
@@ -22,13 +23,14 @@ public class ProfileController {
 	@Autowired
 	private ProfileService profileService;
 	
+	@Autowired
+	private NotificationMessage notificationMessage;
+	
 	@GetMapping("/profile/Profile.html")
 	public String onPageRequested(@AuthenticationPrincipal AuthenticatedUser user,
-											Model model) {
+									Model model) {
 		
 		ProfileEditForm form = profileService.providePersonalInfo(user);
-		
-		model.addAttribute("authenticatedUser", user);
 		model.addAttribute("profileEditForm", form);
 		
 		return "profile/Profile.html";
@@ -36,10 +38,9 @@ public class ProfileController {
 	
 	@PostMapping("/profile/ProfileEdit.do")
 	public String onProfileEditRequested(@Valid @ModelAttribute ProfileEditForm profileEditForm,
-								BindingResult bindingResult,
-								Model model,
-								@AuthenticationPrincipal AuthenticatedUser user) {
-		
+											BindingResult bindingResult,
+											Model model,
+											@AuthenticationPrincipal AuthenticatedUser user) {
 		
 		model.addAttribute("authenticatedUser", user);
 		
@@ -48,13 +49,16 @@ public class ProfileController {
 		}
 		
 		try {
-			profileService.editProfile(profileEditForm);
+			profileService.editProfile(profileEditForm, user);
 		} catch (Exception e) {
-			e.printStackTrace();
+			// TODO エラーページへ遷移
 			return "profile/Profile.html";
 		}
 		
-		model.addAttribute("notice", "処理が正常に完了しました。");
+		model.addAttribute("notificationMessage", notificationMessage.builder()
+														.messageLevel(NotificationMessage.MESSAGE_LEVEL_SUCCESS)
+														.messageCode("techshare.web.message.proc.success")
+														.build());
 		return "profile/Profile.html";
 	}
 	

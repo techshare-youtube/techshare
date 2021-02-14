@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="../static/css/layout.css" th:href="@{/css/layout.css}">
+<title>トップ</title>
+</head>
+<body>
+	<div th:fragment="toast" th:remove="tag">
+		<!-- Toast -->
+		<div id="toast" class="position-absolute bg-white shadow-lg top-50 start-50 border px-2 translate-middle" 
+			style="width: 360px;" th:if="${notificationMessage}" th:object="${notificationMessage}">
+			<div class="py-2 d-flex border-bottom align-items-center">
+				<div class="me-2" th:classappend="*{(success ? 'bg-primary' : '') + (info ? 'bg-info' : '') +
+													(warning ? 'bg-warning' : '') + (error ? 'bg-danger' : '')}" 
+					style="width: 1rem; height: 1rem;"></div>
+				<strong class="flex-grow-1">Information</strong>
+				<button id="toast-close" type="button" class="btn-close"></button>
+			</div>
+			<div class="py-2">
+				<span th:text="*{message}"></span>
+			</div>
+		</div>
+	</div>
+	<!-- Scripts -->
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript" src="../static/js/common.js" th:src="@{/js/common.js}"></script>
+</body>
+</html>

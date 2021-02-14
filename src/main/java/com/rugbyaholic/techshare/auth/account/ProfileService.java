@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.common.ImageFile;
-import com.rugbyaholic.techshare.common.UserRepository;
+import com.rugbyaholic.techshare.common.repositories.UserRepository;
 
 @Service
 public class ProfileService {
@@ -22,12 +22,10 @@ public class ProfileService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	private AuthenticatedUser user;
-	
 	public static final String PROFILE_IMAGE_DEST = "D:\\img\\00_profile\\";
 	
 	@Transactional(rollbackFor = Throwable.class)
-	public void editProfile(ProfileEditForm form) throws Exception {
+	public void editProfile(ProfileEditForm form, AuthenticatedUser user) throws Exception {
 		
 		// DB登録用の画像ファイル名を生成
 		MultipartFile uploadFile = form.getUploadFile();
@@ -71,9 +69,6 @@ public class ProfileService {
 	}
 	
 	public ProfileEditForm providePersonalInfo(AuthenticatedUser user) {
-		
-		// ユーザーオブジェクトをフィールドに保持
-		this.user = user;
 		
 		// ユーザーの個人情報を取得
 		Optional<ProfileEditForm> optionalForm = repository.createProfileEditForm(user.getId());
