@@ -53,7 +53,7 @@
 			</li>
 		</ul>
 	</div>
-	<div class="main">
+	<div class="main d-flex flex-column">
 		<nav class="navbar navbar-dark text-light sticky-top bg-dark">
 			<div class="container-fluid">
 				<span class="navbar-brand visible-lt-md">TechShare</span>
@@ -62,103 +62,101 @@
 				</button>
 			</div>
 		</nav>
-		<div class="content overflow-auto d-flex flex-column">
-			<div class="p-3">
-				<h4>ユーザ―情報一覧</h4>
-			</div>
-			<div class="bg-white sticky-top p-3">
-				<div class="text-end">
-					<a href="#" class="btn btn-primary btn-sm shadow-sm">
-						<span>ユーザー新規登録</span>
-					</a>
+		<form th:action="@{/}" class="container-fluid p-4 pb-5" method="post" th:object="${userRegistrationForm}"
+				enctype="multipart/form-data" autocomplete="off">
+			<div class="row g-3">
+				<div class="col col-12">
+					<h4 class="pb-2">ユーザ―情報登録・編集</h4>
 				</div>
-				<!-- 検索条件 -->
-				<form th:action="@{manage/user/UserSearch.do}" class="my-2">
-					<div class="d-flex align-items-between">
-						<h5 class="me-2">検索条件</h5>
-						<a href="#" id="condition-toggler" data-bs-toggle="collapse" data-bs-target="#searchCondition">
-							<span class="d-none">[表示]</span>
-							<span>[隠す]</span>
-						</a>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">社員番号</span>
+				</div>
+				<div class="col col-12 col-md-9">
+					<input type="text" class="form-control form-control-sm bg-transparent border-0" 
+						style="width: 8rem;" tabindex="-1" readonly th:field="*{empNo}" />
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">氏名</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input type="text" class="form-control form-control-sm" style="width: 12rem;" th:field="*{username}"
+						th:classappend="${#fields.hasError('username') ? 'is-invalid bg-light' : ''}"/>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('username')}"
+							th:errors="*{username}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">メールアドレス</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input type="email" class="form-control form-control-sm" style="width: 20rem;" th:field="*{email}"
+						th:classappend="${#fields.hasError('email') ? 'is-invalid bg-light' : ''}"/>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('email')}"
+							th:errors="*{email}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+				
+					<span class="fw-bold">プロフィール画像</span>
+				</div>
+				<div class="col col-12 col-md-9">
+					<div class="p-1 bg-secondary d-inline-block">
+						<img th:src="*{profileImage.encodedString()}" 
+							alt="" class="profile-photo" id="thumbnail"/>
 					</div>
-					<div id="searchCondition" class="collapse show">
-						<div class="border p-3 rounded">
-							<div class="d-flex align-items-top mb-2">
-								<strong style="width: 10rem;">社員番号</strong>
-								<input type="text" class="form-control form-control-sm" style="width: 10rem;" />
-							</div>
-							<div class="d-flex align-items-top mb-2">
-								<strong style="width: 10rem;">氏名</strong>
-								<input type="text" class="form-control form-control-sm" style="width: 16rem;" />
-							</div>
-							<div class="d-flex align-items-top mb-2">
-								<strong style="width: 10rem;">所属部署</strong>
-								<select class="form-select form-select-sm" style="width: 16rem;">
-									<option value="">-- 選択してください</option>
-								</select>
-							</div>
-							<div class="d-flex align-items-top mb-2">
-								<strong style="width: 10rem;">役職</strong>
-								<select class="form-select form-select-sm" style="width: 16rem;">
-									<option value="">-- 選択してください</option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="py-2">
-						<button class="btn btn-success btn-sm shadow-sm px-3">
-							<span>検索実行</span>
-						</button>
-					</div>
-				</form>
-			</div>
-			<div class="pb-3 px-3 flex-grow-1 overflow-hidden" style="height: 100%">
-				<div class="table-fixed-header">
-					<table class="table table-sm table-striped m-0">
-						<col width="5%"/>
-						<col width="15%"/>
-						<col width="25%"/>
-						<col width="30%"/>
-						<col width="25%"/>
-						<thead>
-							<tr>
-								<th class="sticky-top bg-white text-truncate"></th>
-								<th class="sticky-top bg-white text-truncate">社員番号</th>
-								<th class="sticky-top bg-white text-truncate">氏名</th>
-								<th class="sticky-top bg-white text-truncate">所属部署</th>
-								<th class="sticky-top bg-white text-truncate">役職</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td class="text-truncate text-center">
-									<a class="text-dark" title="編集" href="#">
-										<i class="bi bi-pen"></i>
-									</a>
-								</td>
-								<td class="text-truncate">0000001</td>
-								<td class="text-truncate">John Doe</td>
-								<td class="text-truncate">0010001:Sales Management</td>
-								<td class="text-truncate">0001:Senior Manager</td>
-							</tr>
-						</tbody>
-					</table>
-					<div class="position-sticky top-100 start-0 py-2">
-						
+					<div>
+						<label for="photo-file" class="btn btn-secondary btn-sm shadow-sm">アップロード</label>
+						<input type="file" id="photo-file" class="d-none" accept="image/*" 
+								th:field="*{uploadFile}"/>
 					</div>
 				</div>
+				<div class="col col-12 col-md-3"></div>
+				<div class="col col-12 col-md-9">
+					
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">所属部署</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<select th:field="*{deptCd}" class="form-select form-select-sm" style="width: 12rem;">
+						<option value="">-- 選択してください</option>
+						<option th:each="option : *{deptOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+					</select>
+				</div>
+				<div class="col col-12 col-md-4">
+					
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">役職</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<select th:field="*{posCd}" class="form-select form-select-sm" style="width: 12rem;">
+						<option value="">-- 選択してください</option>
+						<option th:each="option : *{posOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+					</select>
+				</div>
+				<div class="col col-12 col-md-4">
+					
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">ユーザー権限</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					
+				</div>
+				<div class="col col-12 col-md-4">
+					
+				</div>
 			</div>
-		</div>
+			<div class="footer px-3">
+				<span></span>
+				<button class="btn btn-success btn-sm shadow-sm">
+					<span>ユーザ―情報登録</span>
+				</button>
+			</div>
+		</form>
 	</div>
-	<script type="text/javascript">
-	$(function() {
-		$(document).on('click', '#condition-toggler', function(e) {
-			e.preventDefault();
-			$(this).find('span').each(function(index, element) {
-				$(element).toggleClass('d-none');
-			});
-		});
-	});
-	</script>
 </body>
 </html>

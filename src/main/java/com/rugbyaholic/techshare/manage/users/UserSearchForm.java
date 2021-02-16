@@ -17,7 +17,7 @@ public class UserSearchForm {
 	private List<Option> deptOptions;
 	
 	private List<Option> posOptions;
-
+	
 	public String getEmpNo() {
 		return empNo;
 	}

@@ -37,12 +37,13 @@ html, body {
 }
 .main {
 	height: 100%;
+	overflow: auto;
 	position: relative;
 	transition: all linear .3s;
 }
-.main .content {
-	height: calc(100vh - 56px);
-}
+/* .main .content { */
+/* 	height: calc(100vh - 56px); */
+/* } */
 .visible-lt-md {
 	visibility: visible;
 }

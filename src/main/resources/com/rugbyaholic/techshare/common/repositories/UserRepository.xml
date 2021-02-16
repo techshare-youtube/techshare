@@ -121,4 +121,67 @@
 	]]>
 	</update>
 	
+	<select id="loadUserList" parameterType="com.rugbyaholic.techshare.manage.users.UserSearchForm"
+			resultType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
+	<![CDATA[
+		SELECT  U.EMAIL                 AS email,
+		        U.EMP_NO                AS empNo,
+		        U.NAME                  AS username,
+		        DP.DEPT_NM              AS deptName,
+		        POS.POS_NM              AS posName
+		FROM    USERS U
+		INNER JOIN DEPTS DP
+		ON      DP.DEPT_CD       =  U.DEPT_CD
+		AND     DP.AVF          <=  CURDATE()
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    DEPTS
+		            WHERE   DEPT_CD      =  DP.DEPT_CD
+		            AND     AVF         <=  CURDATE()
+		            AND     AVF          >  DP.AVF
+		        )
+		INNER JOIN POSITIONS POS
+		ON      POS.POS_CD       =  U.POS_CD
+		AND     POS.AVF         <=  CURDATE()
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    POSITIONS
+		            WHERE   POS_CD       =  POS.POS_CD
+		            AND     AVF         <=  CURDATE()
+		            AND     AVF          >  POS.AVF
+		        )
+		WHERE   U.AVF           <=  CURDATE()
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    USERS
+		            WHERE   EMAIL        =  U.EMAIL
+		            AND     AVF         <=  CURDATE()
+		            AND     AVF          >  U.AVF
+		        )	
+	]]>
+	<if test="empNo != null">
+	<![CDATA[
+		AND    U.EMP_NO     =  #{empNo}
+	]]>
+	</if>
+	<if test="name != null">
+	<![CDATA[
+		AND    U.NAME       =  #{name}
+	]]>
+	</if>
+	<if test="deptCd != null">
+	<![CDATA[
+		AND    U.DEPT_CD    =  #{deptCd}
+	]]>
+	</if>
+	<if test="posCd != null">
+	<![CDATA[
+		AND    U.POS_CD     =  #{posCd}
+	]]>
+	</if>
+	</select>
+	
 </mapper>
