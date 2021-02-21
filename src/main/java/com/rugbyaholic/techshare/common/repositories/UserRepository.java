@@ -21,4 +21,6 @@ public interface UserRepository {
 	public int updatePersonalInfo(ProfileEditForm profileEditForm);
 	
 	public List<AuthenticatedUser> loadUserList(UserSearchForm form);
+	
+	public int countUser(UserSearchForm form);
 }

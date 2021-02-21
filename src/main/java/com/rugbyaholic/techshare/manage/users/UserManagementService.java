@@ -27,6 +27,11 @@ public class UserManagementService {
 		return form;
 	}
 	
+	public int countUser(UserSearchForm form) {
+		
+		return userRepository.countUser(form);
+	}
+	
 	public List<AuthenticatedUser> loadUserList(UserSearchForm form) {
 		
 		form.setDeptOptions(codeRepository.getDepertmentCd());

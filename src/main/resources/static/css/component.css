@@ -3,6 +3,7 @@
 	height: 100%;
 	overflow: auto;
 	position: relative;
+	flex-grow: 1;
 }
 .table {
 	border-collapse: separate;

@@ -16,11 +16,11 @@
 	<div th:replace="fragments/Sidenav :: sidenav"></div>
 	<div class="main d-flex flex-column">
 		<div th:replace="fragments/Header :: header"></div>
-		<form th:action="@{/manage/user/UserSearch.do}" th:object="${userSearchForm}">
+		<form th:action="@{/manage/users/UserSearch.do}" th:object="${userSearchForm}">
 			<div class="p-3">
 				<h4>ユーザ―情報一覧</h4>
 			</div>
-			<div class="bg-white sticky-top p-3">
+			<div class="p-3">
 				<div class="text-end">
 					<a href="#" class="btn btn-primary btn-sm shadow-sm">
 						<span>ユーザー新規登録</span>
@@ -72,41 +72,63 @@
 			</div>
 		</form>
 		<!-- 検索結果 -->
-		<div class="overflow-auto mh-100 flex-grow-1 px-3">
-			<div class="table-fixed-header">
-				<table class="table table-sm table-striped m-0">
-					<col width="5%"/>
-					<col width="15%"/>
-					<col width="25%"/>
-					<col width="30%"/>
-					<col width="25%"/>
-					<thead>
-						<tr>
-							<th class="sticky-top bg-white text-truncate"></th>
-							<th class="sticky-top bg-white text-truncate">社員番号</th>
-							<th class="sticky-top bg-white text-truncate">氏名</th>
-							<th class="sticky-top bg-white text-truncate">所属部署</th>
-							<th class="sticky-top bg-white text-truncate">役職</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="user : ${userList}">
-							<td>
-								<a href="#">
-									<i class="bi bi-pen"></i>
-								</a>
-							</td>
-							<td th:text="${user.empNo}"></td>
-							<td th:text="${user.username}"></td>
-							<td th:text="${user.deptName}"></td>
-							<td th:text="${user.posName}"></td>
-						</tr>
-					</tbody>
-				</table>
-				<div class="position-sticky top-100 start-0 py-2">
-					
-				</div>
-			</div>
+		<div class="table-fixed-header px-3">
+			<table class="table table-sm table-striped m-0 pb-3">
+				<col width="5%"/>
+				<col width="15%"/>
+				<col width="25%"/>
+				<col width="30%"/>
+				<col width="25%"/>
+				<thead>
+					<tr>
+						<th class="sticky-top bg-white text-truncate"></th>
+						<th class="sticky-top bg-white text-truncate">社員番号</th>
+						<th class="sticky-top bg-white text-truncate">氏名</th>
+						<th class="sticky-top bg-white text-truncate">所属部署</th>
+						<th class="sticky-top bg-white text-truncate">役職</th>
+					</tr>
+				</thead>
+				<tbody th:if="${searchResult}">
+					<tr th:each="user : ${searchResult.entities}">
+						<td class="text-center">
+							<a href="#">
+								<i class="bi bi-pen"></i>
+							</a>
+						</td>
+						<td th:text="${user.empNo}"></td>
+						<td th:text="${user.username}"></td>
+						<td th:text="${user.deptName}"></td>
+						<td th:text="${user.posName}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="p-2" th:if="${searchResult}">
+			<ul class="pagination">
+				<li class="page-item">
+					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.currentPage - 1}|" class="page-link">前へ</a>
+				</li>
+				<li class="page-item">
+					<a th:href="|@{/manage/users/UserPageView.do}?p=1|" class="page-link">1</a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.pageFrom != 2}">
+					...
+				</li>
+				<li class="page-item" th:each="index : ${#numbers.sequence(searchResult.pageFrom, searchResult.pageTo)}">
+					<a th:href="|@{/manage/users/UserPageView.do}?p=${index}|" class="page-link" th:text="${index}"></a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.totalPageCount - searchResult.pageTo > 1}">
+					...
+				</li>
+				<li class="page-item">
+					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.totalPageCount}|" 
+						class="page-link" th:text="${searchResult.totalPageCount}"></a>
+				</li>
+				<li class="page-item">
+					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.currentPage + 1}|" 
+						class="page-link">次へ</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 	<div th:replace="fragments/Toast :: toast"></div>

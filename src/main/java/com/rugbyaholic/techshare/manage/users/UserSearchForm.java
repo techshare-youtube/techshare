@@ -18,6 +18,10 @@ public class UserSearchForm {
 	
 	private List<Option> posOptions;
 	
+	private int pageFrom;
+	
+	private int count;
+	
 	public String getEmpNo() {
 		return empNo;
 	}
@@ -64,5 +68,21 @@ public class UserSearchForm {
 
 	public void setPosOptions(List<Option> posOptions) {
 		this.posOptions = posOptions;
+	}
+
+	public int getPageFrom() {
+		return pageFrom;
+	}
+
+	public void setPageFrom(int pageFrom) {
+		this.pageFrom = pageFrom;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 }
