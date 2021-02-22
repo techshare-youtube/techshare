@@ -27,13 +27,38 @@
 				<span class="text-danger" th:text="${authenticationException.message}"></span>
 			</div>
 			<div class="py-3 d-grid gap-2">
-				<button type="submit" class="btn btn-primary">ログイン</button>
+				<button type="submit" class="btn btn-success">ログイン</button>
+				<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+					data-bs-target="#registrationForm">初期ユーザー登録</button>
 			</div>
 		</form>
+		<div class="modal fade" id="registrationForm">
+			<div class="modal-dialog">
+				<form class="modal-content" th:action="@{/UserRegistration.do}" autocomplete="off" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">初期ユーザー登録フォーム</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-2">
+							<label for="email">E-Mail</label>
+							<input type="email" name="email" id="email" class="form-control form-control-sm" />
+						</div>
+						<div class="mb-2">
+							<label for="password">Password</label>
+							<input type="password" name="password" id="password" class="form-control form-control-sm" />
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-success btn-sm shadow-sm">登録</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
-	
 	<!-- Scripts -->
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+	<div th:replace="fragments/Toast :: toast"></div>
 </body>
 </html>

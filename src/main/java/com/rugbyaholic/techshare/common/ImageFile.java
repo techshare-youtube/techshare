@@ -22,7 +22,9 @@ public class ImageFile {
 	 * @return
 	 */
 	public String encodedString() {
+		
 		File imageFile = new File(fileName);
+		
 		StringBuffer base64String = new StringBuffer();
 		try {
 			String contentType = Files.probeContentType(imageFile.toPath());

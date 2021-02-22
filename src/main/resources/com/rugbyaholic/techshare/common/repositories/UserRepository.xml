@@ -169,14 +169,17 @@
 	
 	<update id="updatePersonalInfo" parameterType="com.rugbyaholic.techshare.auth.account.ProfileEditForm">
 	<![CDATA[
-		UPDATE  PERSONAL_INFO
-		SET     ZIPCODE      =  #{zipcode},
+		INSERT INTO PERSONAL_INFO
+		(USER_ID, ZIPCODE, PREF, CITY, BLDG, TELNO, MOBILE_NO)
+		VALUES
+		(#{userId}, #{zipcode}, #{pref}, #{city}, #{bldg}, #{phoneNo}, #{mobilePhoneNo})
+		ON DUPLICATE KEY UPDATE  
+		        ZIPCODE      =  #{zipcode},
 		        PREF         =  #{pref},
 		        CITY         =  #{city},
 		        BLDG         =  #{bldg},
 		        TELNO        =  #{phoneNo},
 		        MOBILE_NO    =  #{mobilePhoneNo}
-		WHERE   USER_ID      =  #{userId}
 	]]>
 	</update>
 	
@@ -246,5 +249,19 @@
 		LIMIT  #{pageFrom}, #{count}
 	]]>
 	</select>
+	
+	<insert id="registerInitialUser" useGeneratedKeys="true" keyProperty="id">
+	<![CDATA[
+		INSERT INTO USERS (EMAIL, AVF, NAME, PASSWORD, LOCKED, EXPIRED, EMP_NO, DEPT_CD, POS_CD, PROFILE_IMG)
+		VALUES (#{email}, CURDATE(), #{username}, #{password}, 0, 0, #{empNo}, '0000000', '0000', 'src/main/resources/static/img/anonymous.png')
+	]]>
+	</insert>
+	
+	<insert id="grantAuthority">
+	<![CDATA[
+		INSERT INTO USER_ROLES (USER_ID, ROLE, DELFLG)
+		VALUES (#{user.id}, #{role}, '0')
+	]]>
+	</insert>
 	
 </mapper>

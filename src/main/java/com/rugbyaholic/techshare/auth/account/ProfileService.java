@@ -65,7 +65,7 @@ public class ProfileService {
 		form.setUserId(user.getId());
 		updateCount += repository.updatePersonalInfo(form);
 		
-		if (updateCount != 2) throw new Exception();
+		if (updateCount < 2) throw new Exception();
 	}
 	
 	public ProfileEditForm providePersonalInfo(AuthenticatedUser user) {
