@@ -1,0 +1,11 @@
+@charset "UTF-8";
+.table-fixed-header {
+	height: 100%;
+	overflow: auto;
+	position: relative;
+	flex-grow: 1;
+}
+.table {
+	border-collapse: separate;
+	border-spacing: 0;
+}

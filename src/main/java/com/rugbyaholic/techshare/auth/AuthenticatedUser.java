@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.rugbyaholic.techshare.common.ImageFile;
+
 public class AuthenticatedUser implements UserDetails {
 
 	private static final long serialVersionUID = -3047963961151549314L;
@@ -28,6 +30,14 @@ public class AuthenticatedUser implements UserDetails {
 	private boolean locked;
 	
 	private List<String> roles;
+	
+	private String empNo;
+	
+	private String deptName;
+	
+	private String posName;
+	
+	private ImageFile profileImage;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -112,5 +122,37 @@ public class AuthenticatedUser implements UserDetails {
 
 	public void setLocked(boolean locked) {
 		this.locked = locked;
+	}
+
+	public String getEmpNo() {
+		return empNo;
+	}
+
+	public void setEmpNo(String empNo) {
+		this.empNo = empNo;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
+	public String getPosName() {
+		return posName;
+	}
+
+	public void setPosName(String posName) {
+		this.posName = posName;
+	}
+
+	public ImageFile getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(ImageFile profileImage) {
+		this.profileImage = profileImage;
 	}
 }

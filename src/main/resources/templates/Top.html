@@ -1,71 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-<link rel="stylesheet" href="../static/css/layout.css" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<meta th:replace="fragments/Scripts :: scripts">
 <title>トップ</title>
 </head>
 <body>
-	<div class="sidenav bg-light">
-		<nav class="navbar navbar-dark text-light sticky-top" style="background: darkred;">
-			<div class="container-fluid">
-				<a href="#" class="navbar-brand sidenav-toggler">
-					<i class="fas fa-angle-left"></i>
-				</a>
-				<span class="navbar-brand visible-gt-lg">TechShare</span>
-			</div>
-		</nav>
-		<!-- ユーザ情報 -->
-		<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
-			<span th:text="*{username}">Username</span>
-			<!-- 画像 -->
-			<img class="profile-photo my-2" src="../static/img/anonymous.png" alt="Profile" />
-			<!-- E-Mail -->
-			<span>XXXXXX@mydomain.com</span>
-			<hr />
-			<div class="d-flex justify-content-end">
-				<form th:action="@{/Logout.do}" method="post">
-					<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
-				</form>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main d-flex flex-column">
+		<div th:replace="fragments/Header :: header"></div>
+		<div class="container-fluid p-3 position-relative">
+			<div class="row g-3">
+				<div class="col col-12">
+					<img th:src="@{/img/constr1.gif}" alt="" />
+				</div>
 			</div>
 		</div>
-		<ul class="nav flex-column">
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">ホーム</a>
-			</li>
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">仕入</a>
-			</li>
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">受注</a>
-			</li>
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">経費申請</a>
-			</li>
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">マスタメンテナンス</a>
-			</li>
-		</ul>
 	</div>
-	<div class="main">
-		<nav class="navbar navbar-dark text-light bg-dark sticky-top">
-			<div class="container-fluid">
-				<span class="navbar-brand visible-lt-md">TechShare</span>
-				<button type="button" class="btn sidenav-toggler text-light">
-					<i class="bi bi-three-dots-vertical"></i>
-				</button>
-			</div>
-		</nav>
-		<div class="container-fluid">
-			<h3 class="my-2">ホーム画面（開発中）</h3>
-		</div>
-	</div>
-	<!-- Scripts -->
-	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+	<div th:replace="fragments/Toast :: toast"></div>
 </body>
 </html>

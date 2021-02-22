@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:fragment="header" th:remove="tag">
+		<nav class="navbar navbar-dark text-light bg-dark">
+			<div class="container-fluid">
+				<span class="navbar-brand visible-lt-md">TechShare</span>
+				<button type="button" class="btn sidenav-toggler text-light">
+					<i class="bi bi-three-dots-vertical"></i>
+				</button>
+			</div>
+		</nav>
+	</div>
+	
+	<div th:fragment="caption" th:remove="tag">
+		<h1 th:if="${message}" th:text="${message}"></h1>
+	</div>
+</body>
+</html>

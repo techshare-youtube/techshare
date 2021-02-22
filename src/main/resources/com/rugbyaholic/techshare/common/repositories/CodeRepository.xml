@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+    "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rugbyaholic.techshare.common.repositories.CodeRepository">
+
+	<select id="getDepertmentCd" resultType="com.rugbyaholic.techshare.common.Option">
+	<![CDATA[
+		SELECT  DP.DEPT_CD          AS code,
+        		DP.DEPT_NM          AS name
+		FROM    DEPTS DP
+		WHERE   AVF     <=  CURDATE()
+		AND     NOT EXISTS
+        		(
+            		SELECT  1
+		            FROM    DEPTS
+		            WHERE   DEPT_CD      =  DP.DEPT_CD
+		            AND     AVF         <=  CURDATE()
+		            AND     AVF          >  DP.AVF
+        		)
+	]]>
+	</select>
+	
+	<select id="getPositionCd" resultType="com.rugbyaholic.techshare.common.Option">
+	<![CDATA[
+		SELECT  POS.POS_CD          AS code,
+		        POS.POS_NM          AS name
+		FROM    POSITIONS POS
+		WHERE   AVF         <=  CURDATE()
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    POSITIONS
+		            WHERE   POS_CD       =  POS.POS_CD
+		            AND     AVF         <=  CURDATE()
+		            AND     AVF          >  POS.AVF
+		        )
+	]]>
+	</select>
+	
+</mapper>
