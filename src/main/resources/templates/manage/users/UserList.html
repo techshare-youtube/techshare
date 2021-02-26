@@ -103,33 +103,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="p-2" th:if="${searchResult}">
-			<ul class="pagination">
-				<li class="page-item">
-					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.currentPage - 1}|" class="page-link">前へ</a>
-				</li>
-				<li class="page-item">
-					<a th:href="|@{/manage/users/UserPageView.do}?p=1|" class="page-link">1</a>
-				</li>
-				<li class="page-item mx-2" th:if="${searchResult.pageFrom != 2}">
-					...
-				</li>
-				<li class="page-item" th:each="index : ${#numbers.sequence(searchResult.pageFrom, searchResult.pageTo)}">
-					<a th:href="|@{/manage/users/UserPageView.do}?p=${index}|" class="page-link" th:text="${index}"></a>
-				</li>
-				<li class="page-item mx-2" th:if="${searchResult.totalPageCount - searchResult.pageTo > 1}">
-					...
-				</li>
-				<li class="page-item">
-					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.totalPageCount}|" 
-						class="page-link" th:text="${searchResult.totalPageCount}"></a>
-				</li>
-				<li class="page-item">
-					<a th:href="|@{/manage/users/UserPageView.do}?p=${searchResult.currentPage + 1}|" 
-						class="page-link">次へ</a>
-				</li>
-			</ul>
-		</div>
+		<div th:replace="fragments/Pagination :: pagination(@{/manage/users/UserPageView.do})"></div>
 	</div>
 	<div th:replace="fragments/Toast :: toast"></div>
 	<script type="text/javascript">

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>insert title here</title>
+</head>
+<body>
+	<div th:fragment="pagination(baseUrl)" th:remove="tag">
+		<div class="p-3" th:if="${searchResult}">
+			<ul class="pagination">
+				<li class="page-item" th:classappend="${searchResult.currentPage == 1 ? 'disabled' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.currentPage - 1}|" class="page-link">前へ</a>
+				</li>
+				<li class="page-item" th:classappend="${searchResult.currentPage == 1 ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=1|" class="page-link">1</a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.pageFrom != 2}">
+					...
+				</li>
+				<li class="page-item" th:each="index : ${#numbers.sequence(searchResult.pageFrom, searchResult.pageTo)}"
+					th:if="${searchResult.totalPageCount > 2}" th:classappend="${searchResult.currentPage == index ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=${index}|" class="page-link" th:text="${index}"></a>
+				</li>
+				<li class="page-item mx-2" th:if="${searchResult.totalPageCount - searchResult.pageTo > 1}">
+					...
+				</li>
+				<li class="page-item" th:if="${searchResult.totalPageCount > 1}"
+					th:classappend="${searchResult.currentPage == searchResult.totalPageCount ? 'active' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.totalPageCount}|" 
+						class="page-link" th:text="${searchResult.totalPageCount}"></a>
+				</li>
+				<li class="page-item" th:classappend="${searchResult.currentPage == searchResult.totalPageCount ? 'disabled' : ''}">
+					<a th:href="|${baseUrl}?p=${searchResult.currentPage + 1}|" 
+						class="page-link">次へ</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>
