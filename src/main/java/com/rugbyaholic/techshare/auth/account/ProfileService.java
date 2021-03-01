@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.common.ImageFile;
 import com.rugbyaholic.techshare.common.repositories.UserRepository;
+import com.rugbyaholic.techshare.common.util.WritableFile;
 
 @Service
 public class ProfileService {
@@ -33,18 +34,9 @@ public class ProfileService {
 		
 		// アップロードファイルが空でない場合は所定のパスにファイルを格納し
 		if (!uploadFile.isEmpty()) {
-			// ファイル保存先が存在しない場合は新規作成、存在する場合は配下のファイルとディレクトリを全削除
-			File directory = new File(absolutePath);
-			if (directory.exists()) {
-				for (File target : directory.listFiles()) {
-					target.delete();
-				}
-			} else {
-				directory.mkdirs();
-			}
 			
-			File dest = new File(absolutePath + uploadFile.getOriginalFilename());
-			uploadFile.transferTo(dest);
+			WritableFile writableFile = new WritableFile(uploadFile);
+			writableFile.deleteAndWrite(absolutePath);
 			
 			// ユーザーオブジェクトが持つ画像情報を更新
 			ImageFile imageFile = new ImageFile();
