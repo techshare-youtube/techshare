@@ -13,4 +13,5 @@ public interface CodeRepository {
 	
 	public List<Option> getPositionCd();
 	
+	public List<Option> getCodeOptions(long codeId);
 }

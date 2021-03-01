@@ -39,4 +39,13 @@
 	]]>
 	</select>
 	
+	<select id="getCodeOptions" parameterType="java.lang.Long" resultType="com.rugbyaholic.techshare.common.Option">
+	<![CDATA[
+		SELECT  CODE            AS code,
+        		CODE_NM         AS name
+		FROM    CODEMST
+		WHERE   CODE_ID  =  #{codeId}
+	]]>
+	</select>
+	
 </mapper>

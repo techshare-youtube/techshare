@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>insert title here</title>
+</head>
+<body>
+	<div class="cover"></div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
+	<div class="main d-flex flex-column">
+		<div th:replace="fragments/Header :: header"></div>
+		<form th:action="@{/manage/users/UserRegistration.do}" class="container-fluid p-4 pb-5"
+				method="post" th:object="${userRegistrationForm}" enctype="multipart/form-data" autocomplete="off">
+			<div class="row g-3">
+				<div class="col col-12">
+					<h4 class="pb-2">ユーザ―情報登録・編集</h4>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">社員番号</span>
+				</div>
+				<div class="col col-12 col-md-9">
+					<input type="text" class="form-control form-control-sm bg-transparent border-0" 
+						style="width: 8rem;" tabindex="-1" readonly th:field="*{empNo}" />
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">プロフィール画像</span>
+				</div>
+				<div class="col col-12 col-md-9">
+					<div class="p-1 bg-secondary d-inline-block">
+						<img th:src="*{profileImage.encodedString()}" 
+							alt="" class="profile-photo" id="thumbnail"/>
+					</div>
+					<div>
+						<label for="photo-file" class="btn btn-secondary btn-sm shadow-sm">アップロード</label>
+						<input type="file" id="photo-file" class="d-none" accept="image/*" 
+								th:field="*{uploadFile}"/>
+					</div>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">氏名</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input type="text" class="form-control form-control-sm" style="width: 12rem;" th:field="*{username}"
+						th:classappend="${#fields.hasError('username') ? 'is-invalid bg-light' : ''}"/>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('username')}"
+							th:errors="*{username}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">メールアドレス</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input type="email" class="form-control form-control-sm" style="width: 20rem;" th:field="*{email}"
+						th:classappend="${#fields.hasError('email') ? 'is-invalid bg-light' : ''}"/>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('email')}"
+							th:errors="*{email}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">システム利用開始日</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input type="date" class="form-control form-control-sm" style="width: 12rem;" th:field="*{avf}"
+						th:classappend="${#fields.hasError('avf') ? 'is-invalid bg-light' : ''}"/>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('avf')}"
+							th:errors="*{avf}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">パスワード</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
+							placeholder="パスワード" th:field="*{password}"
+							th:classappend="${#fields.hasErrors('password') || #fields.hasErrors('passwordConfirmed') 
+											? 'is-invalid bg-light' : ''}" />
+				</div>
+				<div class="col col-12 col-md-4">
+					
+				</div>
+				<div class="col col-12 col-md-3"></div>
+				<div class="col col-12 col-md-5">
+					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
+							placeholder="パスワード再入力" th:field="*{passwordConfirm}"
+							th:classappend="${#fields.hasErrors('passwordConfirm') || #fields.hasErrors('passwordConfirmed') 
+											? 'is-invalid bg-light' : ''}" />
+				</div>
+				<div class="col col-12 col-md-4">
+					
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">所属部署</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<select th:field="*{deptCd}" class="form-select form-select-sm" style="width: 12rem;"
+							th:classappend="${#fields.hasError('deptCd') ? 'is-invalid bg-light' : ''}">
+						<option value="">-- 選択してください</option>
+						<option th:each="option : *{deptOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+					</select>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('deptCd')}"
+							th:errors="*{deptCd}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">役職</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<select th:field="*{posCd}" class="form-select form-select-sm" style="width: 12rem;">
+						<option value="">-- 選択してください</option>
+						<option th:each="option : *{posOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+					</select>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('posCd')}"
+							th:errors="*{posCd}"></span>
+				</div>
+				<div class="col col-12 col-md-3">
+					<span class="fw-bold">ユーザー権限</span>
+				</div>
+				<div class="col col-12 col-md-5">
+					<select th:field="*{authorities}" class="form-select form-select-sm"
+							multiple="multiple" style="width: 12rem;" size="3">
+						<option th:each="option : *{authorityOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+					</select>
+				</div>
+				<div class="col col-12 col-md-4">
+					<span class="text-danger" th:if="${#fields.hasError('authorities')}"
+							th:errors="*{authorities}"></span>
+				</div>
+			</div>
+			<div class="footer px-3">
+				<span></span>
+				<button class="btn btn-success btn-sm shadow-sm">
+					<span>ユーザ―情報登録</span>
+				</button>
+			</div>
+		</form>
+	</div>
+	<div th:replace="fragments/Toast :: toast"></div>
+</body>
+</html>

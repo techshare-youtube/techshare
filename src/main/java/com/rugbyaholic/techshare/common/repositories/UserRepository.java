@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.auth.account.ProfileEditForm;
+import com.rugbyaholic.techshare.manage.users.UserRegistrationForm;
 import com.rugbyaholic.techshare.manage.users.UserSearchForm;
 
 @Mapper
@@ -29,4 +30,7 @@ public interface UserRepository {
 	
 	public int grantAuthority(@Param("user") AuthenticatedUser user, @Param("role") String userRole);
 	
+	public int registerUser(UserRegistrationForm form);
+	
+	public Optional<UserRegistrationForm> loadUserRegistrationForm(long id);
 }

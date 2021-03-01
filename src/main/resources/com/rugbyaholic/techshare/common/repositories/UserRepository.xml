@@ -186,7 +186,7 @@
 	<select id="loadUserList" parameterType="com.rugbyaholic.techshare.manage.users.UserSearchForm"
 			resultType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
 	<![CDATA[
-		SELECT  U.EMAIL                 AS email,
+		SELECT  U.ID 	                AS id,
 		        U.EMP_NO                AS empNo,
 		        U.NAME                  AS username,
 		        DP.DEPT_NM              AS deptName,
@@ -261,6 +261,68 @@
 	<![CDATA[
 		INSERT INTO USER_ROLES (USER_ID, ROLE, DELFLG)
 		VALUES (#{user.id}, #{role}, '0')
+	]]>
+	</insert>
+	
+	<select id="loadUserRegistrationForm" resultMap="userRegistrationForm">
+	<![CDATA[
+		SELECT  U.ID,
+		        U.EMAIL,
+		        U.EMP_NO,
+		        U.NAME,
+		        U.AVF,
+		        U.PASSWORD,
+		        U.PROFILE_IMG,
+		        U.POS_CD,
+		        R.ROLE
+		FROM    USERS U
+		INNER JOIN USER_ROLES R
+		ON      U.ID         =  R.USER_ID
+		WHERE   U.ID         =  #{id}
+	]]>
+	</select>
+	
+	<resultMap type="com.rugbyaholic.techshare.manage.users.UserRegistrationForm" id="userRegistrationForm">
+		<result property="id" column="ID" />
+		<result property="email" column="EMAIL" />
+		<result property="empNo" column="EMP_NO" />
+		<result property="username" column="NAME" />
+		<result property="avf" column="AVF" />
+		<result property="password" column="PASSWORD" />
+		<association property="imageFile">
+			<result property="fileName" column="PROFILE_IMG" />
+		</association>
+		<collection property="authorities" ofType="java.lang.String">
+			<result column="ROLE" />
+		</collection>
+	</resultMap>
+	
+	<insert id="registerUser" useGeneratedKeys="true" keyProperty="id">
+	<![CDATA[
+		INSERT INTO USERS
+		(
+		    EMAIL,
+		    AVF,
+		    NAME,
+		    PASSWORD,
+		    LOCKED,
+		    EXPIRED,
+		    EMP_NO,
+		    DEPT_CD,
+		    POS_CD,
+		    PROFILE_IMG
+		) VALUES (
+		    #{email},
+		    #{avf},
+		    #{username},
+		    #{password},
+		    0,
+		    0,
+		    #{empNo},
+		    #{deptCd},
+		    #{posCd},
+		    #{imageFile.fileName}
+		)
 	]]>
 	</insert>
 	

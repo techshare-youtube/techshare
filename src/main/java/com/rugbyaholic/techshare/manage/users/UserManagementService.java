@@ -1,5 +1,7 @@
 package com.rugbyaholic.techshare.manage.users;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.common.repositories.CodeRepository;
+import com.rugbyaholic.techshare.common.repositories.NumberingRepository;
 import com.rugbyaholic.techshare.common.repositories.UserRepository;
 
 @Service
@@ -19,6 +22,9 @@ public class UserManagementService {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private NumberingRepository numberingRepository;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -51,7 +57,11 @@ public class UserManagementService {
 		user.setEmail(email);
 		user.setPassword(passwordEncoder.encode(password));
 		user.setUsername("初期ユーザー");
-		user.setEmpNo("99999999");
+		
+		String numberingCode = "E00";
+		String currenYear = new SimpleDateFormat("yyyy").format(new Date());
+		user.setEmpNo(numberingRepository.issue(numberingCode, currenYear));
+		numberingRepository.increase(numberingCode, currenYear, 0l);
 		
 		int updCount = 0;
 		updCount += userRepository.registerInitialUser(user);
