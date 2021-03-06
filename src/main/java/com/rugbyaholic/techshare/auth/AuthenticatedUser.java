@@ -33,11 +33,19 @@ public class AuthenticatedUser implements UserDetails {
 	
 	private String empNo;
 	
+	private String deptCd;
+	
 	private String deptName;
+	
+	private String posCd;
 	
 	private String posName;
 	
 	private ImageFile profileImage;
+	
+	public boolean hasRole(String role) {
+		return roles.contains(role);
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -154,5 +162,21 @@ public class AuthenticatedUser implements UserDetails {
 
 	public void setProfileImage(ImageFile profileImage) {
 		this.profileImage = profileImage;
+	}
+
+	public String getDeptCd() {
+		return deptCd;
+	}
+
+	public void setDeptCd(String deptCd) {
+		this.deptCd = deptCd;
+	}
+
+	public String getPosCd() {
+		return posCd;
+	}
+
+	public void setPosCd(String posCd) {
+		this.posCd = posCd;
 	}
 }

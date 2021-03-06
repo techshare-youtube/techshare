@@ -32,6 +32,20 @@ public class UserManagementController {
 		return "manage/users/UserList.html";
 	}
 	
+	@GetMapping("/manage/users/UserRegistration.html")
+	public String onUserRegistrationRequested(@RequestParam(value = "email", required = false)String email,
+												Model model) {
+		
+		try {
+			UserRegistrationForm form = service.initializeRegistrationForm(email);
+			model.addAttribute("userRegistrationForm", form);
+		} catch (Exception e) {
+			// TODO エラー画面開発後に実装
+		}
+		
+		return "manage/users/UserRegistration.html";
+	}
+	
 	@GetMapping("/manage/users/UserPageView.do")
 	public String onPageViewRequested(@RequestParam("p") int pageNo, Model model) {
 		

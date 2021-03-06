@@ -32,6 +32,11 @@ public class UserManagementService {
 		return form;
 	}
 	
+	public UserRegistrationForm initializeRegistrationForm(String email) throws Exception {
+		// TODO Mapperから返された情報を元にUserRegistrationFormオブジェクトを生成する。
+		return null;
+	}
+	
 	public int countUser(UserSearchForm form) {
 		
 		return userRepository.countUser(form);
