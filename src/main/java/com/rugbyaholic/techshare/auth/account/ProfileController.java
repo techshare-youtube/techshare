@@ -41,9 +41,6 @@ public class ProfileController {
 											BindingResult bindingResult,
 											Model model,
 											@AuthenticationPrincipal AuthenticatedUser user) {
-		
-		model.addAttribute("authenticatedUser", user);
-		
 		if (bindingResult.hasErrors()) {
 			return "profile/Profile.html";
 		}

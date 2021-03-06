@@ -1,67 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-<link rel="stylesheet" href="../static/css/layout.css" th:href="@{/css/layout.css}">
-<link rel="stylesheet" href="../static/css/component.css" th:href="@{/css/component.css}">
-<link rel="stylesheet" href="https://unpkg.com/simplebar@latest/dist/simplebar.css" />
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="../static/js/common.js"></script>
-<script type="text/javascript" src="../static/js/components.js"></script>
-<script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
-<title>画面レイアウト確認用HTML</title>
+<link rel="stylesheet" th:href="@{/css/layout.css}">
+<link rel="stylesheet" th:href="@{/css/component.css}">
+<meta th:replace="fragments/Scripts :: scripts">
+<title>insert title here</title>
 </head>
 <body>
 	<div class="cover"></div>
-	<div class="sidenav bg-light">
-		<nav class="navbar navbar-dark text-light" style="background: darkred;">
-			<div class="container-fluid">
-				<a class="navbar-brand sidenav-toggler">
-					<i class="bi bi-chevron-left"></i>
-				</a>
-				<span class="navbar-brand visible-gt-lg">TechShare</span>
-			</div>
-		</nav>
-		<!-- ユーザ情報 -->
-		<div class="container-fluid bg-secondary text-light py-3" th:object="${authenticatedUser}">
-			<span th:text="*{username}">Username</span>
-			<!-- 画像 -->
-			<img class="profile-photo my-2" src="../static/img/anonymous.png"
-					alt="Profile" th:src="@{/img/anonymous.png}" />
-			<!-- E-Mail -->
-			<span>XXXXXX@mydomain.com</span>
-			<hr />
-			<div class="d-flex justify-content-between">
-				<a href="#" class="btn btn-primary btn-sm shadow-sm me-2">プロフィール編集</a>
-				<form th:action="@{/Logout.do}" method="post">
-						<button type="submit" class="btn btn-success btn-sm shadow-sm">ログオフ</button>
-				</form>
-			</div>
-		</div>
-		<ul class="nav flex-column">
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">ホーム</a>
-			</li>
-			<li class="nav-item border-bottom">
-				<a href="#" class="nav-link text-dark py-3">マスターメンテナンス</a>
-			</li>
-		</ul>
-	</div>
+	<div th:replace="fragments/Sidenav :: sidenav"></div>
 	<div class="main d-flex flex-column">
-		<nav class="navbar navbar-dark text-light sticky-top bg-dark">
-			<div class="container-fluid">
-				<span class="navbar-brand visible-lt-md">TechShare</span>
-				<button type="button" class="btn sidenav-toggler text-light">
-						<i class="bi bi-three-dots-vertical"></i>
-				</button>
-			</div>
-		</nav>
+		<div th:replace="fragments/Header :: header"></div>
 		<form th:action="@{/manage/users/UserRegistration.do}" class="container-fluid p-4 pb-5"
 				method="post" th:object="${userRegistrationForm}" enctype="multipart/form-data" autocomplete="off">
 			<div class="row g-3">
@@ -177,10 +131,7 @@
 				<div class="col col-12 col-md-5">
 					<select th:field="*{authorities}" class="form-select form-select-sm"
 							multiple="multiple" style="width: 12rem;" size="3">
-<!-- 						<option th:each="option : *{authrityOptions}" th:value="${option.code}" th:text="${option.name}"></option> -->
-						<option value="01">ROLE_USER</option>
-						<option value="02">ROLE_MANAGER</option>
-						<option value="03">ROLE_ADMIN</option>
+						<option th:each="option : *{authrityOptions}" th:value="${option.code}" th:text="${option.name}"></option>
 					</select>
 				</div>
 				<div class="col col-12 col-md-4">
@@ -194,7 +145,8 @@
 					<span>ユーザ―情報登録</span>
 				</button>
 			</div>
-		</form>
+		</form>		
 	</div>
+	<div th:replace="fragments/Toast :: toast"></div>
 </body>
 </html>
