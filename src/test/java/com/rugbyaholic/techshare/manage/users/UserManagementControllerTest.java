@@ -1,6 +1,7 @@
 package com.rugbyaholic.techshare.manage.users;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -8,22 +9,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 
-@SpringBootTest
 class UserManagementControllerTest {
 	
 	private MockMvc mockMvc;
 	
-	@MockBean
+	@Mock
 	private UserManagementService service;
 	
 	@InjectMocks
@@ -42,7 +41,7 @@ class UserManagementControllerTest {
 		UserRegistrationForm form = new UserRegistrationForm(new AuthenticatedUser());
 		form.setUsername("Anonymous");
 		form.setEmail("anonymous@sample.co.jp");
-		Mockito.when(service.initializeRegistrationForm("anonymous@sample.co.jp"))
+		Mockito.when(service.initializeRegistrationForm(anyString()))
 			.thenReturn(form);
 		
 		// Controllerにリクエストを発行

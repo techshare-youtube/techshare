@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.rugbyaholic.techshare.common.ImageFile;
+import com.rugbyaholic.techshare.common.Option;
 
 public class AuthenticatedUser implements UserDetails {
 
@@ -29,7 +30,7 @@ public class AuthenticatedUser implements UserDetails {
 	
 	private boolean locked;
 	
-	private List<String> roles;
+	private List<Option> roles;
 	
 	private String empNo;
 	
@@ -41,16 +42,12 @@ public class AuthenticatedUser implements UserDetails {
 	
 	private String posName;
 	
-	private ImageFile profileImage;
-	
-	public boolean hasRole(String role) {
-		return roles.contains(role);
-	}
+	private ImageFile profileImage = new ImageFile();
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream()
-					.map(SimpleGrantedAuthority::new)
+					.map((o) -> new SimpleGrantedAuthority(o.getName()))
 					.collect(Collectors.toList());
 	}
 
@@ -108,11 +105,11 @@ public class AuthenticatedUser implements UserDetails {
 		this.avf = avf;
 	}
 
-	public List<String> getRoles() {
+	public List<Option> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<String> roles) {
+	public void setRoles(List<Option> roles) {
 		this.roles = roles;
 	}
 

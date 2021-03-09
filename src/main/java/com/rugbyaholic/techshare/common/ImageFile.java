@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
+import org.springframework.util.StringUtils;
+
 public class ImageFile {
 	
 	private String fileName;
@@ -23,6 +25,9 @@ public class ImageFile {
 	 */
 	public String encodedString() {
 		
+		if (!StringUtils.hasText(fileName)) {
+			fileName = "src/main/resources/static/img/anonymous.png";
+		}
 		File imageFile = new File(fileName);
 		
 		StringBuffer base64String = new StringBuffer();

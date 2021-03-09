@@ -2,7 +2,9 @@ package com.rugbyaholic.techshare.manage.users;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
@@ -21,6 +23,7 @@ public class UserRegistrationForm {
 	
 	private String email;
 	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date avf;
 	
 	private String password;
@@ -42,7 +45,19 @@ public class UserRegistrationForm {
 	private AuthenticatedUser user;
 	
 	public UserRegistrationForm(AuthenticatedUser user) {
-		// TODO AuthenticatedUserオブジェクトからUserRegistrationFormオブジェクトを生成する。
+		this.user = user;
+		this.empNo = user.getEmpNo();
+		this.imageFile = user.getProfileImage();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.avf = user.getAvf();
+		this.deptCd = user.getDeptCd();
+		this.posCd = user.getPosCd();
+		if (user.getRoles() != null) {
+			this.roles = user.getRoles().stream()
+							.map(o -> o.getCode())
+							.collect(Collectors.toList());
+		}
 	}
 
 	public String getEmpNo() {
