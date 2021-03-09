@@ -9,7 +9,7 @@
 <link rel="stylesheet" th:href="@{/css/layout.css}">
 <link rel="stylesheet" th:href="@{/css/component.css}">
 <meta th:replace="fragments/Scripts :: scripts">
-<title>insert title here</title>
+<title>ユーザ―情報登録</title>
 </head>
 <body>
 	<div class="cover"></div>
@@ -34,13 +34,13 @@
 				</div>
 				<div class="col col-12 col-md-9">
 					<div class="p-1 bg-secondary d-inline-block">
-						<img th:src="*{profileImage.encodedString()}" 
+						<img th:src="*{imageFile.encodedString()}" 
 							alt="" class="profile-photo" id="thumbnail"/>
 					</div>
 					<div>
 						<label for="photo-file" class="btn btn-secondary btn-sm shadow-sm">アップロード</label>
 						<input type="file" id="photo-file" class="d-none" accept="image/*" 
-								th:field="*{uploadFile}"/>
+								th:field="*{profileImage}"/>
 					</div>
 				</div>
 				<div class="col col-12 col-md-3">
@@ -48,10 +48,10 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<input type="text" class="form-control form-control-sm" style="width: 12rem;" th:field="*{username}"
-						th:classappend="${#fields.hasError('username') ? 'is-invalid bg-light' : ''}"/>
+						th:classappend="${#fields.hasErrors('username') ? 'is-invalid bg-light' : ''}"/>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('username')}"
+					<span class="text-danger" th:if="${#fields.hasErrors('username')}"
 							th:errors="*{username}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
@@ -59,10 +59,10 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<input type="email" class="form-control form-control-sm" style="width: 20rem;" th:field="*{email}"
-						th:classappend="${#fields.hasError('email') ? 'is-invalid bg-light' : ''}"/>
+						th:classappend="${#fields.hasErrors('email') ? 'is-invalid bg-light' : ''}"/>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('email')}"
+					<span class="text-danger" th:if="${#fields.hasErrors('email')}"
 							th:errors="*{email}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
@@ -70,10 +70,10 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<input type="date" class="form-control form-control-sm" style="width: 12rem;" th:field="*{avf}"
-						th:classappend="${#fields.hasError('avf') ? 'is-invalid bg-light' : ''}"/>
+						th:classappend="${#fields.hasErrors('avf') ? 'is-invalid bg-light' : ''}"/>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('avf')}"
+					<span class="text-danger" th:if="${#fields.hasErrors('avf')}"
 							th:errors="*{avf}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
@@ -82,7 +82,7 @@
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード" th:field="*{password}"
-							th:classappend="${#fields.hasErrors('password') || #fields.hasErrors('passwordConfirmed') 
+							th:classappend="${#fields.hasErrors('password') || #fields.hasErrors('passwordConfirm') 
 											? 'is-invalid bg-light' : ''}" />
 				</div>
 				<div class="col col-12 col-md-4">
@@ -92,7 +92,7 @@
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード再入力" th:field="*{passwordConfirm}"
-							th:classappend="${#fields.hasErrors('passwordConfirm') || #fields.hasErrors('passwordConfirmed') 
+							th:classappend="${#fields.hasErrors('passwordConfirm') || #fields.hasErrors('passwordConfirm') 
 											? 'is-invalid bg-light' : ''}" />
 				</div>
 				<div class="col col-12 col-md-4">
@@ -103,13 +103,13 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<select th:field="*{deptCd}" class="form-select form-select-sm" style="width: 12rem;"
-							th:classappend="${#fields.hasError('deptCd') ? 'is-invalid bg-light' : ''}">
+							th:classappend="${#fields.hasErrors('deptCd') ? 'is-invalid bg-light' : ''}">
 						<option value="">-- 選択してください</option>
 						<option th:each="option : *{deptOptions}" th:value="${option.code}" th:text="${option.name}"></option>
 					</select>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('deptCd')}"
+					<span class="text-danger" th:if="${#fields.hasErrors('deptCd')}"
 							th:errors="*{deptCd}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
@@ -122,21 +122,22 @@
 					</select>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('posCd')}"
+					<span class="text-danger" th:if="${#fields.hasErrors('posCd')}"
 							th:errors="*{posCd}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
 					<span class="fw-bold">ユーザー権限</span>
 				</div>
 				<div class="col col-12 col-md-5">
-					<select th:field="*{authorities}" class="form-select form-select-sm"
+					<select name="roles" class="form-select form-select-sm"
 							multiple="multiple" style="width: 12rem;" size="3">
-						<option th:each="option : *{authrityOptions}" th:value="${option.code}" th:text="${option.name}"></option>
+						<option th:each="option : *{roleOptions}" th:value="${option.code}" th:text="${option.name}"
+								th:field="*{roles}"></option>
 					</select>
 				</div>
 				<div class="col col-12 col-md-4">
-					<span class="text-danger" th:if="${#fields.hasError('authorities')}"
-							th:errors="*{authorities}"></span>
+					<span class="text-danger" th:if="${#fields.hasErrors('roles')}"
+							th:errors="*{roles}"></span>
 				</div>
 			</div>
 			<div class="footer px-3">

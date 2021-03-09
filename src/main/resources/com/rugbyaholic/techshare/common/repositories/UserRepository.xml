@@ -92,6 +92,8 @@
 				CODEMST.CODE_NM,
 				USERS.EMP_NO,
         		USERS.PROFILE_IMG,
+        		USERS.DEPT_CD,
+        		USERS.POS_CD,
         		DP.DEPT_NM,
         		POS.POS_NM
 		FROM  	USERS
@@ -146,6 +148,8 @@
 		<result property="locked" column="LOCKED" />
 		<result property="expired" column="EXPIRED" />
 		<!-- AS 2020.02.04 VOL007 -->
+		<result property="deptCd" column="DEPT_CD"/>
+		<result property="posCd" column="POS_CD"/>
 		<result property="empNo" column="EMP_NO" />
 		<result property="deptName" column="DEPT_NM" />
 		<result property="posName" column="POS_NM" />
@@ -153,8 +157,9 @@
 			<result property="fileName" column="PROFILE_IMG" />
 		</association>
 		<!-- AE 2020.02.04 VOL007 -->
-		<collection property="roles" ofType="java.lang.String">
-			<result column="CODE_NM" />
+		<collection property="roles" ofType="com.rugbyaholic.techshare.common.Option">
+			<result property="code" column="ROLE"/>
+			<result property="name" column="CODE_NM" />
 		</collection>
 	</resultMap>
 	

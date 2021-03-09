@@ -22,7 +22,7 @@
 			</div>
 			<div class="p-3">
 				<div class="text-end">
-					<a href="#" class="btn btn-primary btn-sm shadow-sm">
+					<a th:href="@{/manage/users/UserRegistration.html}" class="btn btn-primary btn-sm shadow-sm">
 						<span>ユーザー新規登録</span>
 					</a>
 				</div>
@@ -91,7 +91,7 @@
 				<tbody th:if="${searchResult}">
 					<tr th:each="user : ${searchResult.entities}">
 						<td class="text-center">
-							<a href="#">
+							<a th:href="|@{/manage/users/UserRegistration.html}?email=${user.email}|">
 								<i class="bi bi-pen"></i>
 							</a>
 						</td>
