@@ -82,21 +82,21 @@
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード" th:field="*{password}"
-							th:classappend="${#fields.hasErrors('password') || #fields.hasErrors('passwordConfirm') 
-											? 'is-invalid bg-light' : ''}" />
+							th:classappend="${#fields.hasErrors('password') ? 'is-invalid bg-light' : ''}" />
 				</div>
 				<div class="col col-12 col-md-4">
-					
+					<span class="text-danger" th:if="${#fields.hasErrors('password')}"
+							th:errors="*{password}"></span>
 				</div>
 				<div class="col col-12 col-md-3"></div>
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード再入力" th:field="*{passwordConfirm}"
-							th:classappend="${#fields.hasErrors('passwordConfirm') || #fields.hasErrors('passwordConfirm') 
-											? 'is-invalid bg-light' : ''}" />
+							th:classappend="${#fields.hasErrors('passwordConfirm') ? 'is-invalid bg-light' : ''}" />
 				</div>
 				<div class="col col-12 col-md-4">
-					
+					<span class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}"
+							th:errors="*{passwordConfirm}"></span>
 				</div>
 				<div class="col col-12 col-md-3">
 					<span class="fw-bold">所属部署</span>
@@ -139,6 +139,8 @@
 					<span class="text-danger" th:if="${#fields.hasErrors('roles')}"
 							th:errors="*{roles}"></span>
 				</div>
+				<input type="hidden" th:field="*{user.id}" />
+				<input type="hidden" th:field="*{user.email}" />
 			</div>
 			<div class="footer px-3">
 				<span></span>

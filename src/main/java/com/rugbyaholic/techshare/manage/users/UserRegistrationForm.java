@@ -10,7 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.common.ImageFile;
 import com.rugbyaholic.techshare.common.Option;
+import com.rugbyaholic.techshare.manage.users.validators.annotations.ConfirmedPassword;
+import com.rugbyaholic.techshare.manage.users.validators.annotations.UniqueEmail;
 
+@ConfirmedPassword
 public class UserRegistrationForm {
 	
 	private String empNo;
@@ -21,6 +24,7 @@ public class UserRegistrationForm {
 	
 	private String username;
 	
+	@UniqueEmail
 	private String email;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -43,6 +47,10 @@ public class UserRegistrationForm {
 	private List<Option> roleOptions;
 	
 	private AuthenticatedUser user;
+	
+	public UserRegistrationForm() {
+		this(new AuthenticatedUser());
+	}
 	
 	public UserRegistrationForm(AuthenticatedUser user) {
 		this.user = user;
