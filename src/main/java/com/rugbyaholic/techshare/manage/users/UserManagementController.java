@@ -1,14 +1,18 @@
 package com.rugbyaholic.techshare.manage.users;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
@@ -30,6 +34,14 @@ public class UserManagementController {
 		
 		model.addAttribute("userSearchForm", service.initializeSearchForm());
 		return "manage/users/UserList.html";
+	}
+	
+	@PostMapping("/manage/users/UserRegistration.do")
+	public String onUserUpdateRequested(@Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
+										BindingResult bindingResult,
+										Model model) {
+		model.addAttribute("userRegistrationForm", userRegistrationForm);
+		return "/manage/users/UserRegistration.html";
 	}
 	
 	@GetMapping("/manage/users/UserRegistration.html")
