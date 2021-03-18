@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+    "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rugbyaholic.techshare.common.repositories.NumberingRepository">
+	
+	<select id="issueNumber" resultType="java.lang.String">
+	<![CDATA[
+		SELECT  LPAD(NEXTNO, DIGITS, '0')       AS NEXTNO
+		FROM    NUMBERING_LEDGER
+		WHERE   NUMBERING_CD     =  #{numberingCode}
+		AND     AVAIL_YEAR       =  #{availYear}
+	]]>
+	</select>
+	
+	<update id="next">
+	<![CDATA[
+		UPDATE  NUMBERING_LEDGER
+		SET     NEXTNO           =  NEXTNO + 1,
+		        UPDUSR           =  #{user.id},
+		        UPDDATE          =  CURDATE()
+		WHERE   NUMBERING_CD     =  #{numberingCode}
+		AND     AVAIL_YEAR       =  #{availYear}
+	]]>
+	</update>
+	
+</mapper>

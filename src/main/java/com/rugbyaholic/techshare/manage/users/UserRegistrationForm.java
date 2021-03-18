@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,22 +26,29 @@ public class UserRegistrationForm {
 	
 	private ImageFile imageFile;
 	
+	@Size(max = 64)
 	private String username;
 	
 	@UniqueEmail
+	@Size(max = 128)
 	private String email;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date avf;
 	
+	@Size(min = 8, max = 20)
 	private String password;
 	
+	@Size(min = 8, max = 20)
 	private String passwordConfirm;
 	
+	@NotBlank
 	private String deptCd;
 	
+	@NotBlank
 	private String posCd;
 	
+	@NotNull
 	private List<String> roles;
 	
 	private List<Option> deptOptions;

@@ -59,7 +59,8 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<input type="email" class="form-control form-control-sm" style="width: 20rem;" th:field="*{email}"
-						th:classappend="${#fields.hasErrors('email') ? 'is-invalid bg-light' : ''}"/>
+						th:classappend="${#fields.hasErrors('email') ? 'is-invalid bg-light' : ''}"
+						th:disabled="*{user.id} != 0" required="required" />
 				</div>
 				<div class="col col-12 col-md-4">
 					<span class="text-danger" th:if="${#fields.hasErrors('email')}"
@@ -70,7 +71,8 @@
 				</div>
 				<div class="col col-12 col-md-5">
 					<input type="date" class="form-control form-control-sm" style="width: 12rem;" th:field="*{avf}"
-						th:classappend="${#fields.hasErrors('avf') ? 'is-invalid bg-light' : ''}"/>
+						th:classappend="${#fields.hasErrors('avf') ? 'is-invalid bg-light' : ''}"
+						required="required" />
 				</div>
 				<div class="col col-12 col-md-4">
 					<span class="text-danger" th:if="${#fields.hasErrors('avf')}"
@@ -82,7 +84,8 @@
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード" th:field="*{password}"
-							th:classappend="${#fields.hasErrors('password') ? 'is-invalid bg-light' : ''}" />
+							th:classappend="${#fields.hasErrors('password') ? 'is-invalid bg-light' : ''}"
+							th:disabled="*{user.id} != 0" th:required="*{user.id} == 0" />
 				</div>
 				<div class="col col-12 col-md-4">
 					<span class="text-danger" th:if="${#fields.hasErrors('password')}"
@@ -92,7 +95,8 @@
 				<div class="col col-12 col-md-5">
 					<input  type="password" class="form-control form-control-sm" style="width: 16rem;" 
 							placeholder="パスワード再入力" th:field="*{passwordConfirm}"
-							th:classappend="${#fields.hasErrors('passwordConfirm') ? 'is-invalid bg-light' : ''}" />
+							th:classappend="${#fields.hasErrors('passwordConfirm') ? 'is-invalid bg-light' : ''}"
+							th:disabled="*{user.id} != 0" th:required="*{user.id} == 0" />
 				</div>
 				<div class="col col-12 col-md-4">
 					<span class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}"
