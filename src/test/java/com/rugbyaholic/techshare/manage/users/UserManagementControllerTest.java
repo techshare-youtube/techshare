@@ -41,7 +41,7 @@ class UserManagementControllerTest {
 		UserRegistrationForm form = new UserRegistrationForm(new AuthenticatedUser());
 		form.setUsername("Anonymous");
 		form.setEmail("anonymous@sample.co.jp");
-		Mockito.when(service.initializeRegistrationForm(anyString()))
+		Mockito.when(service.initializeRegistrationForm(anyLong()))
 			.thenReturn(form);
 		
 		// Controllerにリクエストを発行

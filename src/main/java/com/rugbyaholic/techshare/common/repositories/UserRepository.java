@@ -8,10 +8,17 @@ import org.apache.ibatis.annotations.Param;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.auth.account.ProfileEditForm;
+import com.rugbyaholic.techshare.manage.users.UserRegistrationForm;
 import com.rugbyaholic.techshare.manage.users.UserSearchForm;
 
 @Mapper
 public interface UserRepository {
+	
+	public void depriveAuthority(@Param("user") AuthenticatedUser user, @Param("role") String userRole);
+	
+	public void registerUser(UserRegistrationForm form);
+	
+	public Optional<AuthenticatedUser> findUserById(Long id);
 	
 	public Optional<AuthenticatedUser> identifyUser(String email);
 	

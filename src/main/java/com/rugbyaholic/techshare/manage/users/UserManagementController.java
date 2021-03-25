@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.common.ui.SearchResult;
+import com.rugbyaholic.techshare.common.util.NotificationMessage;
 
 @Controller
 @Scope("session")
@@ -24,6 +26,9 @@ public class UserManagementController {
 	
 	@Autowired
 	private UserManagementService service;
+	
+	@Autowired
+	private NotificationMessage notificationMessage;
 	
 	private UserSearchForm form;
 	
@@ -39,22 +44,37 @@ public class UserManagementController {
 	@PostMapping("/manage/users/UserRegistration.do")
 	public String onUserUpdateRequested(@Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
 										BindingResult bindingResult,
+										@AuthenticationPrincipal AuthenticatedUser user,
 										Model model) {
-		model.addAttribute("userRegistrationForm", userRegistrationForm);
-		return "/manage/users/UserRegistration.html";
+		if (bindingResult.hasErrors()) {
+			service.restoreRegistrationForm(userRegistrationForm);
+			model.addAttribute("userRegistrationForm", userRegistrationForm);
+			return "/manage/users/UserRegistration.html";
+		} else {
+			try {
+				service.registerUser(userRegistrationForm, user);
+				model.addAttribute("userRegistrationForm", service.initializeRegistrationForm(
+									userRegistrationForm.getUser().getId()));
+				model.addAttribute("notificationMessage", notificationMessage.builder()
+						.messageLevel(NotificationMessage.MESSAGE_LEVEL_SUCCESS)
+						.messageCode("techshare.web.message.proc.success")
+						.build());
+			} catch (Exception e) {
+				// TODO エラー画面開発後に実装
+			}
+			return "/manage/users/UserRegistration.html";
+		}
 	}
 	
 	@GetMapping("/manage/users/UserRegistration.html")
-	public String onUserRegistrationRequested(@RequestParam(value = "email", required = false)String email,
+	public String onUserRegistrationRequested(@RequestParam(value = "id", required = false)Long id,
 												Model model) {
-		
 		try {
-			UserRegistrationForm form = service.initializeRegistrationForm(email);
+			UserRegistrationForm form = service.initializeRegistrationForm(id);
 			model.addAttribute("userRegistrationForm", form);
 		} catch (Exception e) {
 			// TODO エラー画面開発後に実装
 		}
-		
 		return "manage/users/UserRegistration.html";
 	}
 	

@@ -5,6 +5,91 @@
 
 <mapper namespace="com.rugbyaholic.techshare.common.repositories.UserRepository">
 
+	<delete id="depriveAuthority">
+	<![CDATA[
+		DELETE FROM USER_ROLES WHERE USER_ID = #{user.id} AND ROLE = #{role}
+	]]>
+	</delete>
+	
+	<insert id="registerUser" useGeneratedKeys="true" keyProperty="user.id">
+	<![CDATA[
+		INSERT INTO USERS (
+		    EMAIL,
+		    AVF,
+		    NAME,
+		    PASSWORD,
+		    LOCKED,
+		    EXPIRED,
+		    EMP_NO,
+		    DEPT_CD,
+		    POS_CD,
+		    PROFILE_IMG
+		) VALUES (
+		    #{email},
+		    #{avf},
+		    #{username},
+		    #{password},
+		    0,
+		    0,
+		    #{empNo},
+		    #{deptCd},
+		    #{posCd},
+		    #{imageFile.fileName}
+		) ON DUPLICATE KEY UPDATE 
+		    NAME         =  #{username},
+		    DEPT_CD      =  #{deptCd},
+		    POS_CD       =  #{posCd},
+		    PROFILE_IMG  =  #{imageFile.fileName}
+	]]>
+	</insert>
+
+	<select id="findUserById" parameterType="java.lang.Long" resultMap="userDetails">
+	<![CDATA[
+		SELECT 	USERS.ID,
+				USERS.EMAIL,
+				USERS.AVF,
+				USERS.NAME,
+				USERS.PASSWORD,
+				USERS.LOCKED,
+				USERS.EXPIRED,
+				USER_ROLES.ROLE,
+				CODEMST.CODE_NM,
+				USERS.EMP_NO,
+        		USERS.PROFILE_IMG,
+        		USERS.DEPT_CD,
+        		USERS.POS_CD,
+        		DP.DEPT_NM,
+        		POS.POS_NM
+		FROM  	USERS
+		LEFT OUTER JOIN USER_ROLES
+		ON     USER_ROLES.USER_ID = USERS.ID
+		LEFT OUTER JOIN CODEMST
+		ON     CODEMST.CODE_ID   = 1
+		AND    CODEMST.CODE      = USER_ROLES.ROLE
+		INNER JOIN DEPTS DP
+		ON      DP.DEPT_CD        = USERS.DEPT_CD
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    DEPTS
+		            WHERE   DEPTS.DEPT_CD    =  DP.DEPT_CD
+		            AND     DEPTS.AVF       <=  CURDATE()
+		            AND     DEPTS.AVF        >  DP.AVF
+		        )
+		INNER JOIN POSITIONS POS
+		ON      POS.POS_CD        = USERS.POS_CD
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    POSITIONS
+		            WHERE   POSITIONS.POS_CD     =  POS.POS_CD
+		            AND     POSITIONS.AVF       <=  CURDATE()
+		            AND     POSITIONS.AVF        >  POS.AVF
+		        )
+		WHERE  USERS.ID           = #{id}
+	]]>
+	</select>
+
 	<select id="countUser" parameterType="com.rugbyaholic.techshare.manage.users.UserSearchForm"
 			resultType="int">
 	<![CDATA[
@@ -31,37 +116,30 @@
 		            WHERE   POS_CD       =  POS.POS_CD
 		            AND     AVF         <=  CURDATE()
 		            AND     AVF          >  POS.AVF
-		        )
-		WHERE   U.AVF           <=  CURDATE()
-		AND     NOT EXISTS
-		        (
-		            SELECT  1
-		            FROM    USERS
-		            WHERE   EMAIL        =  U.EMAIL
-		            AND     AVF         <=  CURDATE()
-		            AND     AVF          >  U.AVF
 		        )	
 	]]>
-	<if test="empNo != null">
-	<![CDATA[
-		AND    U.EMP_NO     =  #{empNo}
-	]]>
-	</if>
-	<if test="name != null">
-	<![CDATA[
-		AND    U.NAME       =  #{name}
-	]]>
-	</if>
-	<if test="deptCd != null">
-	<![CDATA[
-		AND    U.DEPT_CD    =  #{deptCd}
-	]]>
-	</if>
-	<if test="posCd != null">
-	<![CDATA[
-		AND    U.POS_CD     =  #{posCd}
-	]]>
-	</if>
+	<where>
+		<if test="empNo != null">
+		<![CDATA[
+			AND    U.EMP_NO     =  #{empNo}
+		]]>
+		</if>
+		<if test="name != null">
+		<![CDATA[
+			AND    U.NAME       =  #{name}
+		]]>
+		</if>
+		<if test="deptCd != null">
+		<![CDATA[
+			AND    U.DEPT_CD    =  #{deptCd}
+		]]>
+		</if>
+		<if test="posCd != null">
+		<![CDATA[
+			AND    U.POS_CD     =  #{posCd}
+		]]>
+		</if>
+	</where>
 	</select>
 	
 	<select id="createProfileEditForm" parameterType="java.lang.Long" 
@@ -191,7 +269,8 @@
 	<select id="loadUserList" parameterType="com.rugbyaholic.techshare.manage.users.UserSearchForm"
 			resultType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
 	<![CDATA[
-		SELECT  U.EMAIL                 AS email,
+		SELECT  U.ID                    AS id,
+				U.EMAIL                 AS email,
 		        U.EMP_NO                AS empNo,
 		        U.NAME                  AS username,
 		        DP.DEPT_NM              AS deptName,
@@ -219,36 +298,29 @@
 		            AND     AVF         <=  CURDATE()
 		            AND     AVF          >  POS.AVF
 		        )
-		WHERE   U.AVF           <=  CURDATE()
-		AND     NOT EXISTS
-		        (
-		            SELECT  1
-		            FROM    USERS
-		            WHERE   EMAIL        =  U.EMAIL
-		            AND     AVF         <=  CURDATE()
-		            AND     AVF          >  U.AVF
-		        )	
 	]]>
-	<if test="empNo != null">
-	<![CDATA[
-		AND    U.EMP_NO     =  #{empNo}
-	]]>
-	</if>
-	<if test="name != null">
-	<![CDATA[
-		AND    U.NAME       =  #{name}
-	]]>
-	</if>
-	<if test="deptCd != null">
-	<![CDATA[
-		AND    U.DEPT_CD    =  #{deptCd}
-	]]>
-	</if>
-	<if test="posCd != null">
-	<![CDATA[
-		AND    U.POS_CD     =  #{posCd}
-	]]>
-	</if>
+	<where>
+		<if test="empNo != null">
+		<![CDATA[
+			AND    U.EMP_NO     =  #{empNo}
+		]]>
+		</if>
+		<if test="name != null">
+		<![CDATA[
+			AND    U.NAME       =  #{name}
+		]]>
+		</if>
+		<if test="deptCd != null">
+		<![CDATA[
+			AND    U.DEPT_CD    =  #{deptCd}
+		]]>
+		</if>
+		<if test="posCd != null">
+		<![CDATA[
+			AND    U.POS_CD     =  #{posCd}
+		]]>
+		</if>
+	</where>
 	<![CDATA[
 		ORDER BY U.DEPT_CD, U.EMP_NO
 		LIMIT  #{pageFrom}, #{count}

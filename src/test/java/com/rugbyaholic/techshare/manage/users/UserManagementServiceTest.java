@@ -44,10 +44,10 @@ class UserManagementServiceTest {
 		Mockito.when(codeRepository.getCode(ArgumentMatchers.anyLong()))
 			.thenReturn(List.of(new Option("01", "ROLE_USER")));
 		// UserRepositoryの動作を定義
-		Mockito.when(userRepository.identifyUser(ArgumentMatchers.anyString()))
+		Mockito.when(userRepository.findUserById(ArgumentMatchers.anyLong()))
 			.thenReturn(Optional.of(new AuthenticatedUser()));
 		
-		UserRegistrationForm actual = service.initializeRegistrationForm("");
+		UserRegistrationForm actual = service.initializeRegistrationForm(0l);
 		
 		assertThat(actual.getDeptOptions()).hasSize(1)
 			.extracting(Option::getCode, Option::getName)
