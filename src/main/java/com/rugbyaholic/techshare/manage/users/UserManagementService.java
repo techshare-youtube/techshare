@@ -1,15 +1,24 @@
 package com.rugbyaholic.techshare.manage.users;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
+import com.rugbyaholic.techshare.auth.account.ProfileService;
+import com.rugbyaholic.techshare.common.ImageFile;
 import com.rugbyaholic.techshare.common.repositories.CodeRepository;
+import com.rugbyaholic.techshare.common.repositories.NumberingRepository;
 import com.rugbyaholic.techshare.common.repositories.UserRepository;
+import com.rugbyaholic.techshare.common.util.WritableFile;
 
 @Service
 public class UserManagementService {
@@ -21,20 +30,84 @@ public class UserManagementService {
 	private UserRepository userRepository;
 	
 	@Autowired
+	private NumberingRepository numberingRepository;
+	
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Transactional(rollbackFor = Throwable.class)
+	public void registerUser(UserRegistrationForm form, AuthenticatedUser user) throws Exception {
+		// 社員番号の発番
+		if (form.getEmpNo() == null) {
+			String availYear = new SimpleDateFormat("yyyy").format(new Date());
+			String nextNo = numberingRepository.issueNumber(
+						NumberingRepository.NUMBERING_CODE_EMPNO, availYear);
+			form.setEmpNo(availYear + nextNo);
+			numberingRepository.next(NumberingRepository.NUMBERING_CODE_EMPNO, 
+									availYear, user);
+		}
+		// プロフィール画像の保存
+		MultipartFile uploadFile = form.getProfileImage();
+		String filePath = ProfileService.PROFILE_IMAGE_DEST + form.getEmpNo() + File.separator;
+		if (!uploadFile.isEmpty()) {
+			WritableFile writableFile = new WritableFile(uploadFile);
+			writableFile.deleteAndWrite(filePath);
+			// フォームオブジェクトが持つ画像情報を更新
+			ImageFile imageFile = new ImageFile();
+			imageFile.setFileName(filePath + uploadFile.getOriginalFilename());
+			form.setImageFile(imageFile);
+		} else {
+			form.setImageFile(form.getUser().getProfileImage());
+		}
+		// ユーザ―情報テーブルの更新
+		if (form.getEmail() == null) {
+			form.setEmail(form.getUser().getEmail());
+			form.setPassword(form.getUser().getPassword());
+		} else {
+			form.setPassword(passwordEncoder.encode(form.getPassword()));
+		}
+		userRepository.registerUser(form);
+		// ユーザー権限テーブルの更新
+		form.setUser(userRepository.findUserById(form.getUser().getId())
+										.orElse(new AuthenticatedUser()));
+		// 変更前のユーザー権限
+		List<String> rolesBefore = form.getUser().getRoles().stream()
+									.map(option -> new String(option.getCode()))
+									.collect(Collectors.toList());
+		// 削除対象のユーザー権限
+		List<String> listForDelete = rolesBefore.stream()
+										.filter(p -> !form.getRoles().contains(p))
+										.collect(Collectors.toList());
+		// 新規登録対象のユーザー権限
+		List<String> listForGrant = form.getRoles().stream()
+										.filter(p -> !rolesBefore.contains(p))
+										.collect(Collectors.toList());
+		// 権限剥奪
+		listForDelete.forEach(role -> {
+			userRepository.depriveAuthority(form.getUser(), role);
+		});
+		// 権限付与
+		listForGrant.forEach(role -> {
+			userRepository.grantAuthority(form.getUser(), role);
+		});
+	}
+	
+	public void restoreRegistrationForm(UserRegistrationForm form) {
+		form.setDeptOptions(codeRepository.getDepertmentCd());
+		form.setPosOptions(codeRepository.getPositionCd());
+		form.setRoleOptions(codeRepository.getCode(1));
+	}
+	
 	public UserSearchForm initializeSearchForm() {
-		
 		UserSearchForm form = new UserSearchForm();
 		form.setDeptOptions(codeRepository.getDepertmentCd());
 		form.setPosOptions(codeRepository.getPositionCd());
-		
 		return form;
 	}
 	
-	public UserRegistrationForm initializeRegistrationForm(String email) throws Exception {
+	public UserRegistrationForm initializeRegistrationForm(Long id) throws Exception {
 		UserRegistrationForm form = new UserRegistrationForm(
-					userRepository.identifyUser(email).orElse(new AuthenticatedUser())
+					userRepository.findUserById(id).orElse(new AuthenticatedUser())
 				);
 		form.setDeptOptions(codeRepository.getDepertmentCd());
 		form.setPosOptions(codeRepository.getPositionCd());
@@ -43,12 +116,10 @@ public class UserManagementService {
 	}
 	
 	public int countUser(UserSearchForm form) {
-		
 		return userRepository.countUser(form);
 	}
 	
 	public List<AuthenticatedUser> loadUserList(UserSearchForm form) {
-		
 		form.setDeptOptions(codeRepository.getDepertmentCd());
 		form.setPosOptions(codeRepository.getPositionCd());
 		return userRepository.loadUserList(form);
@@ -56,19 +127,19 @@ public class UserManagementService {
 	
 	@Transactional(rollbackFor = Throwable.class)
 	public void registerInitialUser(String email, String password) throws Exception {
-		
 		AuthenticatedUser user = new AuthenticatedUser();
 		user.setEmail(email);
 		user.setPassword(passwordEncoder.encode(password));
 		user.setUsername("初期ユーザー");
-		user.setEmpNo("99999999");
-		
+		String availYear = new SimpleDateFormat("yyyy").format(new Date());
+		user.setEmpNo(availYear + numberingRepository.issueNumber(
+				NumberingRepository.NUMBERING_CODE_EMPNO, availYear));
+		numberingRepository.next(NumberingRepository.NUMBERING_CODE_EMPNO, availYear, user);
 		int updCount = 0;
 		updCount += userRepository.registerInitialUser(user);
 		updCount += userRepository.grantAuthority(user, "01");
 		updCount += userRepository.grantAuthority(user, "02");
 		updCount += userRepository.grantAuthority(user, "03");
-		
 		if (updCount < 4) throw new Exception();
 	}
 }

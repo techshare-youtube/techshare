@@ -91,7 +91,7 @@
 				<tbody th:if="${searchResult}">
 					<tr th:each="user : ${searchResult.entities}">
 						<td class="text-center">
-							<a th:href="|@{/manage/users/UserRegistration.html}?email=${user.email}|">
+							<a th:href="|@{/manage/users/UserRegistration.html}?id=${user.id}|">
 								<i class="bi bi-pen"></i>
 							</a>
 						</td>
