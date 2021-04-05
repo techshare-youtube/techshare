@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+    "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.rugbyaholic.techshare.comms.repositories.MeetingRoomRepository">
+
+	<select id="searchAllTopics" resultMap="Topics">
+	<![CDATA[
+		SELECT  TOPICS.TOPICNO              AS topicNo,
+		        TOPICS.SUBJECT              AS subject,
+		        TOPICS.CREATEDBY            AS topicCreatedBy,
+		        TOPICS.CREATEDAT            AS topicCreatedAt,
+		        POSTS.POSTNO                AS postNo,
+		        POSTS.POST                  AS postText,
+		        POSTS.CREATEDBY             AS postCreatedBy,
+		        U.NAME                      AS postCreatedUsername,
+		        U.PROFILE_IMG               AS postCreatedUserImage,
+		        POSTS.CREATEDAT             AS postCreatedAt,
+		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.RATING_FLG     AS postRating,
+		        POST_RATINGS.RATEDAT        AS postRatedAt
+		FROM    TOPICS
+		INNER JOIN POSTS
+		ON      TOPICS.TOPICNO   =  POSTS.TOPICNO
+		INNER JOIN USERS U
+		ON      U.EMP_NO         =  POSTS.CREATEDBY
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    USERS
+		            WHERE   EMP_NO   =  POSTS.CREATEDBY
+		            AND     AVF     <=  CURDATE()
+		            AND     AVF      >  U.AVF
+		        )
+		LEFT OUTER JOIN POST_RATINGS
+		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
+		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
+		ORDER BY
+		        TOPICS.TOPICNO,
+		        POSTS.POSTNO
+	]]>
+	</select>
+	
+	<resultMap type="com.rugbyaholic.techshare.comms.Topic" id="Topics">
+		<result property="topicNo" column="topicNo" />
+		<result property="subject" column="subject" />
+		<result property="createdAt" column="topicCreatedAt" />
+		<association property="owner" javaType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
+			<result property="empNo" column="topicCreatedBy" />
+		</association>
+		<collection property="posts" ofType="com.rugbyaholic.techshare.comms.Post">
+			<result property="postNo" column="postNo" />
+			<result property="postText" column="postText" />
+			<result property="postedAt" column="postCreatedAt" />
+			<association property="author" javaType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
+				<result property="empNo" column="postCreatedBy" />
+				<result property="username" column="postCreatedUsername" />
+				<association property="profileImage" javaType="com.rugbyaholic.techshare.common.ImageFile">
+					<result property="fileName" column="postCreatedUserImage" />
+				</association>
+			</association>
+			<collection property="ratings" ofType="com.rugbyaholic.techshare.comms.PostRating">
+				<result property="rating" column="postRating" />
+				<result property="ratedAt" column="postRatedAt" />
+				<association property="rater" javaType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
+					<result property="empNo" column="postRatedAt" />
+				</association>
+			</collection>
+		</collection>
+	</resultMap>
+	
+	<insert id="registerTopic">
+	<![CDATA[
+		INSERT INTO TOPICS(
+		    TOPICNO,
+		    SUBJECT,
+		    CREATEDBY,
+		    CREATEDAT
+		) VALUES (
+		    #{form.topicNo},
+		    #{form.subject},
+		    #{user.empNo},
+		    CURDATE()
+		)
+	]]>
+	</insert>
+	
+	<insert id="registerPost">
+	<![CDATA[
+		INSERT INTO POSTS(
+		    TOPICNO,
+		    POSTNO,
+		    POST,
+		    CREATEDBY,
+		    CREATEDAT
+		) VALUES (
+		    #{form.topicNo},
+		    1,
+		    #{form.primaryPost},
+		    #{user.empNo},
+		    CURDATE()
+		)
+	]]>
+	</insert>
+	
+</mapper>

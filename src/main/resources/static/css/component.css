@@ -9,3 +9,10 @@
 	border-collapse: separate;
 	border-spacing: 0;
 }
+textarea {
+	resize: none;
+}
+.form-control.readonly {
+	background: transparent;
+	border: 0;
+}
