@@ -18,13 +18,13 @@
 				</div>
 			</nav>
 			<!-- ユーザ情報 -->
-			<div class="container-fluid bg-secondary text-light py-3">
+			<div class="container-fluid bg-secondary text-light py-3" th:with="user=${#authentication.principal}">
 				<span th:text="${#authentication.principal.username}">Username</span>
 				<!-- 画像 -->
 				<img class="profile-photo my-2" alt="Profile"
-					th:src="${#authentication.principal.profileImage.encodedString()}" />
+					th:src="${user.profileImage.encodedString()}" />
 				<!-- E-Mail -->
-				<span th:text="${#authentication.principal.email}">XXXXXX@mydomain.com</span>
+				<span th:text="${user.email}">XXXXXX@mydomain.com</span>
 				<hr />
 				<div class="d-flex justify-content-between">
 					<a th:href="@{/profile/Profile.html}" 
@@ -40,6 +40,9 @@
 				</li>
 				<li class="nav-item border-bottom">
 					<a th:href="@{/manage/users/UserList.html}" class="nav-link text-dark py-3">ユーザー管理</a>
+				</li>
+				<li class="nav-item border-bottom">
+					<a th:href="@{/comms/MeetingRoom.html}" class="nav-link text-dark py-3">電子会議室</a>
 				</li>
 			</ul>
 		</div>

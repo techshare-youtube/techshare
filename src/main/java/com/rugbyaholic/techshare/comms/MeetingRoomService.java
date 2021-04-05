@@ -1,0 +1,45 @@
+package com.rugbyaholic.techshare.comms;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.rugbyaholic.techshare.auth.AuthenticatedUser;
+import com.rugbyaholic.techshare.common.aspects.LogRequired;
+import com.rugbyaholic.techshare.common.repositories.NumberingRepository;
+import com.rugbyaholic.techshare.comms.forms.TopicCreationForm;
+import com.rugbyaholic.techshare.comms.repositories.MeetingRoomRepository;
+
+@Service
+public class MeetingRoomService {
+	
+	@Autowired
+	private NumberingRepository numberingRepository;
+	
+	@Autowired
+	private MeetingRoomRepository meetingRoomRepository;
+	
+	@LogRequired
+	public List<Topic> loadTopics() {
+		return meetingRoomRepository.searchAllTopics();
+	}
+	
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public void registerNewTopic(TopicCreationForm form, AuthenticatedUser user) {
+		// トピック番号の発番
+		String availYear = new SimpleDateFormat("yyyy").format(new Date());
+		form.setTopicNo(availYear + numberingRepository.issueNumber(
+						NumberingRepository.NUMBERING_CODE_TOPICNO, availYear));
+		// 番号管理台帳の更新
+		numberingRepository.next(NumberingRepository.NUMBERING_CODE_TOPICNO, availYear, user);
+		// トピックテーブルへの新規登録
+		meetingRoomRepository.registerTopic(form, user);
+		// 投稿テーブルへの新規登録
+		meetingRoomRepository.registerPost(form, user);
+	}
+}
