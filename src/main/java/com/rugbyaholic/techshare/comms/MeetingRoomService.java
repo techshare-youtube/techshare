@@ -42,4 +42,19 @@ public class MeetingRoomService {
 		// 投稿テーブルへの新規登録
 		meetingRoomRepository.registerPost(form, user);
 	}
+	
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public Topic appendPost(TopicCreationForm form, AuthenticatedUser user) {
+		meetingRoomRepository.registerPost(form, user);
+		return meetingRoomRepository.findTopic(form.getTopicNo())
+				.orElse(new Topic());
+	}
+	
+	@Transactional(rollbackFor = Throwable.class)
+	@LogRequired
+	public Topic reloadTopic(String topicNo) {
+		return meetingRoomRepository.findTopic(topicNo)
+				.orElse(new Topic());
+	}
 }

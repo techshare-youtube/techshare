@@ -1,6 +1,7 @@
 package com.rugbyaholic.techshare.comms.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -17,4 +18,6 @@ public interface MeetingRoomRepository {
 	public void registerTopic(@Param("form") TopicCreationForm form, @Param("user") AuthenticatedUser user);
 	
 	public void registerPost(@Param("form") TopicCreationForm form, @Param("user") AuthenticatedUser user);
+	
+	public Optional<Topic> findTopic(String topicNo);
 }
