@@ -4,7 +4,46 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.rugbyaholic.techshare.comms.repositories.MeetingRoomRepository">
-
+	
+	<select id="findTopic" resultMap="Topics">
+	<![CDATA[
+		SELECT  TOPICS.TOPICNO              AS topicNo,
+		        TOPICS.SUBJECT              AS subject,
+		        TOPICS.CREATEDBY            AS topicCreatedBy,
+		        TOPICS.CREATEDAT            AS topicCreatedAt,
+		        POSTS.POSTNO                AS postNo,
+		        POSTS.POST                  AS postText,
+		        POSTS.CREATEDBY             AS postCreatedBy,
+		        U.NAME                      AS postCreatedUsername,
+		        U.PROFILE_IMG               AS postCreatedUserImage,
+		        POSTS.CREATEDAT             AS postCreatedAt,
+		        POST_RATINGS.RATEDBY        AS postRatedBy,
+		        POST_RATINGS.RATING_FLG     AS postRating,
+		        POST_RATINGS.RATEDAT        AS postRatedAt
+		FROM    TOPICS
+		INNER JOIN POSTS
+		ON      TOPICS.TOPICNO   =  POSTS.TOPICNO
+		INNER JOIN USERS U
+		ON      U.EMP_NO         =  POSTS.CREATEDBY
+		AND     NOT EXISTS
+		        (
+		            SELECT  1
+		            FROM    USERS
+		            WHERE   EMP_NO   =  POSTS.CREATEDBY
+		            AND     AVF     <=  CURDATE()
+		            AND     AVF      >  U.AVF
+		        )
+		LEFT OUTER JOIN POST_RATINGS
+		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
+		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
+		WHERE   U.AVF           <=  CURDATE()
+		AND     TOPICS.TOPICNO   =  #{topicNo}
+		ORDER BY
+		        TOPICS.TOPICNO,
+		        POSTS.POSTNO
+	]]>
+	</select>
+	
 	<select id="searchAllTopics" resultMap="Topics">
 	<![CDATA[
 		SELECT  TOPICS.TOPICNO              AS topicNo,
@@ -36,6 +75,7 @@
 		LEFT OUTER JOIN POST_RATINGS
 		ON      POSTS.TOPICNO    =  POST_RATINGS.TOPICNO
 		AND     POSTS.POSTNO     =  POST_RATINGS.POSTNO
+		WHERE   U.AVF           <=  CURDATE()
 		ORDER BY
 		        TOPICS.TOPICNO,
 		        POSTS.POSTNO
@@ -96,7 +136,15 @@
 		    CREATEDAT
 		) VALUES (
 		    #{form.topicNo},
-		    1,
+		    (
+        		SELECT  TMP.NEXT_POST_NO
+        		FROM    
+        		(
+		            SELECT  COALESCE(MAX(POSTNO), 0) + 1 AS NEXT_POST_NO
+		            FROM    POSTS
+		            WHERE   TOPICNO      =  #{form.topicNo}
+		        ) TMP
+		    ),
 		    #{form.primaryPost},
 		    #{user.empNo},
 		    CURDATE()

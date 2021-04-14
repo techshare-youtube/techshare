@@ -1,5 +1,7 @@
 package com.rugbyaholic.techshare.comms;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,27 +22,52 @@ public class MeetingRoomController {
 	@Autowired
 	private MeetingRoomService service;
 	
+	@ModelAttribute
+	public TopicCreationForm topicCreationForm() {
+		return new TopicCreationForm();
+	}
+	
+	@ModelAttribute("topics")
+	public List<Topic> initializeTopics() {
+		return service.loadTopics();
+	}
+	
 	// 初期表示
 	@GetMapping("/comms/MeetingRoom.html")
-	public String onMeetingRoomRequested(Model model) {
-		model.addAttribute("topicCreationForm", new TopicCreationForm());
-		model.addAttribute("topics", service.loadTopics());
+	public String onMeetingRoomRequested() {
 		return "comms/MeetingRoom.html";
 	}
 	
 	// トピック新規作成
 	@PostMapping("/comms/CreateTopic.do")
-	public String onTopicRegistrationRequested(@Valid @ModelAttribute TopicCreationForm form,
+	public String onTopicRegistrationRequested(@Valid TopicCreationForm form,
 												BindingResult bindingResult, Model model,
 												@AuthenticationPrincipal AuthenticatedUser user) {
 		if (bindingResult.hasErrors()) {
 			form.setError(true);
-			model.addAttribute("topicCreationForm", form);
-			model.addAttribute("topics", service.loadTopics());
 			return "comms/MeetingRoom.html";
 		} else {
 			service.registerNewTopic(form, user);
 			return "redirect:/comms/MeetingRoom.html";
 		}
 	}
+	
+	// 投稿追加
+	@PostMapping("/comms/AppendPost.do")
+	public String onAppendPostRequested(@Valid TopicCreationForm form,
+										BindingResult bindingResult, Model model,
+										@AuthenticationPrincipal AuthenticatedUser user) {
+		Topic topic = null;
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("validationMessage",
+							bindingResult.getFieldError().getDefaultMessage());
+			topic = service.reloadTopic(form.getTopicNo());
+		} else {
+			topic = service.appendPost(form, user);
+		}
+		model.addAttribute("topic", topic);
+		model.addAttribute("user", user);
+		return "fragments/Topic :: topic";
+	}
+	
 }
