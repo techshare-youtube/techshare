@@ -84,6 +84,25 @@
 						$(targetId).html(data);
 					});
 				});
+				$(document).on('click', 'button.ajax-link', function() {
+					let parent = $(this).parents('#ratingForm');
+					let paramTopicNo = parent.find('input[name="topicNo"]').val();
+					let paramPostNo = parent.find('input[name="postNo"]').val();
+					let paramRating = $(this).data('ts-param');
+					$.ajax({
+						type: parent.attr('method'),
+						url: parent.attr('action'),
+						dataType: 'html',
+						data: {
+							topicNo: paramTopicNo,
+							postNo: paramPostNo,
+							rating: paramRating
+						}
+					}).done((data) => {
+						let targetId = '#' + paramTopicNo;
+						$(targetId).html(data);
+					});
+				});
 			});
 			</script>
 		</div>		

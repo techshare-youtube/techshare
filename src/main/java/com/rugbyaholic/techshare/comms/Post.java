@@ -19,6 +19,17 @@ public class Post {
 	
 	private List<PostRating> ratings;
 	
+	public boolean isFirstPost() {
+		return postNo == 1;
+	}
+	
+	public PostRating getRateByUser(AuthenticatedUser user) {
+		PostRating postRating = ratings.stream()
+				.filter(p -> Objects.equals(p.getRater().getEmpNo(), user.getEmpNo()))
+				.findFirst().orElse(new PostRating());
+		return postRating;
+	}
+	
 	public List<PostRating> goodRatings() {
 		return ratings.stream().filter(p -> p.getRating() == 1)
 						.collect(Collectors.toList());

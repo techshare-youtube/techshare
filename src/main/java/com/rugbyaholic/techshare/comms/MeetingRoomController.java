@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
 import com.rugbyaholic.techshare.comms.forms.TopicCreationForm;
@@ -30,6 +31,16 @@ public class MeetingRoomController {
 	@ModelAttribute("topics")
 	public List<Topic> initializeTopics() {
 		return service.loadTopics();
+	}
+	
+	@ModelAttribute
+	public Topic topic(TopicCreationForm form) {
+		return service.reloadTopic(form.getTopicNo());
+	}
+	
+	@ModelAttribute("user")
+	public AuthenticatedUser user(@AuthenticationPrincipal AuthenticatedUser user) {
+		return user;
 	}
 	
 	// 初期表示
@@ -57,17 +68,25 @@ public class MeetingRoomController {
 	public String onAppendPostRequested(@Valid TopicCreationForm form,
 										BindingResult bindingResult, Model model,
 										@AuthenticationPrincipal AuthenticatedUser user) {
-		Topic topic = null;
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("validationMessage",
 							bindingResult.getFieldError().getDefaultMessage());
-			topic = service.reloadTopic(form.getTopicNo());
 		} else {
-			topic = service.appendPost(form, user);
+			service.appendPost(form, user);
 		}
-		model.addAttribute("topic", topic);
-		model.addAttribute("user", user);
+		model.addAttribute("topic", service.reloadTopic(form.getTopicNo()));
 		return "fragments/Topic :: topic";
 	}
 	
+	// 投稿評価
+	@PostMapping("/comms/PostRating.do")
+	public String onPostRatingRequested(@RequestParam("topicNo") String topicNo,
+										@RequestParam("postNo") int postNo,
+										@RequestParam("rating") int rating,
+										Model model,
+										@AuthenticationPrincipal AuthenticatedUser user) {
+		service.postRating(topicNo, postNo, rating, user);
+		model.addAttribute("topic", service.reloadTopic(topicNo));
+		return "fragments/Topic :: topic";
+	}
 }
