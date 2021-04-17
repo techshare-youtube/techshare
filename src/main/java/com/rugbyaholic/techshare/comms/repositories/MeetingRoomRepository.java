@@ -20,4 +20,13 @@ public interface MeetingRoomRepository {
 	public void registerPost(@Param("form") TopicCreationForm form, @Param("user") AuthenticatedUser user);
 	
 	public Optional<Topic> findTopic(String topicNo);
+	
+	public Optional<Integer> currentRating(@Param("topicNo") String topicNo, 
+											@Param("postNo") int postNo, 
+											@Param("user") AuthenticatedUser user);
+
+	public void updateRating(@Param("topicNo") String topicNo, 
+							@Param("postNo") int postNo, 
+							@Param("user") AuthenticatedUser user,
+							@Param("rating") int rating);
 }

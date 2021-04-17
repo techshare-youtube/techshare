@@ -5,6 +5,37 @@
 
 <mapper namespace="com.rugbyaholic.techshare.comms.repositories.MeetingRoomRepository">
 	
+	<select id="currentRating" resultType="int">
+	<![CDATA[
+		SELECT  RATING_FLG
+		FROM    POST_RATINGS
+		WHERE   TOPICNO      =  #{topicNo}
+		AND     POSTNO       =  #{postNo}
+		AND     RATEDBY      =  #{user.empNo}
+	]]>
+	</select>
+	
+	<insert id="updateRating">
+	<![CDATA[
+		INSERT INTO POST_RATINGS
+		(
+		    TOPICNO,
+		    POSTNO,
+		    RATEDBY,
+		    RATING_FLG,
+		    RATEDAT
+		) VALUES (
+		    #{topicNo},
+		    #{postNo},
+		    #{user.empNo},
+		    #{rating},
+		    CURDATE()
+		) ON DUPLICATE KEY UPDATE
+		    RATING_FLG       =  #{rating},
+		    RATEDAT          =  CURDATE()
+	]]>
+	</insert>
+	
 	<select id="findTopic" resultMap="Topics">
 	<![CDATA[
 		SELECT  TOPICS.TOPICNO              AS topicNo,
@@ -104,7 +135,7 @@
 				<result property="rating" column="postRating" />
 				<result property="ratedAt" column="postRatedAt" />
 				<association property="rater" javaType="com.rugbyaholic.techshare.auth.AuthenticatedUser">
-					<result property="empNo" column="postRatedAt" />
+					<result property="empNo" column="postRatedBy" />
 				</association>
 			</collection>
 		</collection>
