@@ -13,46 +13,68 @@
 </head>
 <body>
 	<div th:fragment="topic(topic)" th:remove="tag">
-		<h5 th:text="${topic.subject}">トピックのタイトル</h5>
+		<div class="d-flex justify-content-between">
+			<h5 th:text="${topic.subject}">トピックのタイトル</h5>
+			<form th:action="@{/comms/DeleteTopic.do}">
+				<input type="hidden" name="topicNo" th:value="${topic.topicNo}" />
+				<div th:if="${topic.isOwnedBy(user)}">
+					<button class="btn btn-link p-0 text-dark fs-5" title="トピック削除">
+						<i class="bi bi-trash"></i>
+					</button>
+				</div>
+			</form>
+		</div>
 		<div class="d-flex border-bottom mt-3" th:each="post : ${topic.posts}">
 			<div class="me-3">
 				<img src="../static/img/anonymous.png" style="width: 64px;"
 					th:src="${post.author.profileImage.encodedString()}"/>
 			</div>
 			<div class="flex-grow-1">
-				<p class="fw-bold mb-2" th:text="${post.author.username}">投稿者の名前</p>
-				<textarea class="form-control text-dark readonly p-0" readonly th:text="${post.postText}"></textarea>
-				<form id="ratingForm" class="d-flex py-2 justify-content-end"
-						th:action="@{/comms/PostRating.do}" method="post"
-						th:with="rateByUser=${post.getRateByUser(user)}">
+				<form id="ratingForm" th:action="@{/comms/PostRating.do}" method="post" 
+					th:with="rateByUser=${post.getRateByUser(user)}">
+					<div class="d-flex justify-content-between">
+						<p class="fw-bold" th:text="${post.author.username}">投稿者の名前</p>
+						<div th:if="${post.isPostedBy(user)}">
+							<button id="postEdit" type="button" class="btn btn-link p-0 text-dark fs-5" title="投稿編集"
+									th:data-ts-target="|#${topic.topicNo + post.postNo}|">
+								<i class="bi bi-pencil-square"></i>
+							</button>
+						</div>
+					</div>
+					<textarea class="form-control text-dark readonly p-0" readonly th:text="${post.postText}" name="postText"></textarea>
+					<div class="py-2 text-end d-none" th:if="${post.isPostedBy(user)}" th:id="${topic.topicNo + post.postNo}">
+						<a th:href="@{/comms/EditPost.do}" class="btn btn-success btn-sm shadow-sm">編集</a>
+					</div>
 					<input type="hidden" name="topicNo" th:value="${topic.topicNo}" />
 					<input type="hidden" name="postNo" th:value="${post.postNo}" />
-					<div class="d-flex align-items-baseline me-3">
-						<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link" 
-								th:data-ts-param="1" th:disabled="${post.isPostedBy(user)}">
-							<span th:switch="${rateByUser.rating}">
-								<i class="bi bi-hand-thumbs-up-fill" th:case="1"></i>
-								<i class="bi bi-hand-thumbs-up" th:case="*"></i>
+					<div class="d-flex justify-content-end py-2">
+						<div class="d-flex align-items-baseline me-3">
+							<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link" 
+									th:data-ts-param="1" th:disabled="${post.isPostedBy(user)}">
+								<span th:switch="${rateByUser.rating}">
+									<i class="bi bi-hand-thumbs-up-fill" th:case="1"></i>
+									<i class="bi bi-hand-thumbs-up" th:case="*"></i>
+								</span>
+							</button>
+							<span th:text="${post.goodRatings.size()}">13</span>
+						</div>
+						<div class="d-flex align-items-baseline me-3">
+							<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link"
+								th:data-ts-param="-1" th:disabled="${post.isPostedBy(user)}">
+								<span th:switch="${rateByUser.rating}">
+									<i class="bi bi-hand-thumbs-down-fill" th:case="-1"></i>
+									<i class="bi bi-hand-thumbs-down" th:case="*"></i>
+								</span>
+							</button>
+							<span th:text="${post.badRatings.size()}">2</span>
+						</div>
+						<div class="d-flex align-items-baseline"
+							th:classappend="${post.isFirstPost() ? '' : 'd-none'}">
+							<span class="me-2 text-dark fs-5">
+								<i class="bi bi-chat"></i>
 							</span>
-						</button>
-						<span th:text="${post.goodRatings.size()}">13</span>
-					</div>
-					<div class="d-flex align-items-baseline me-3">
-						<button type="button" class="btn btn-link p-0 me-2 text-dark fs-5 ajax-link"
-							th:data-ts-param="-1" th:disabled="${post.isPostedBy(user)}">
-							<span th:switch="${rateByUser.rating}">
-								<i class="bi bi-hand-thumbs-down-fill" th:case="-1"></i>
-								<i class="bi bi-hand-thumbs-down" th:case="*"></i>
-							</span>
-						</button>
-						<span th:text="${post.badRatings.size()}">2</span>
-					</div>
-					<div class="d-flex align-items-baseline"
-						th:classappend="${post.isFirstPost() ? '' : 'd-none'}">
-						<span class="me-2 text-dark fs-5">
-							<i class="bi bi-chat"></i>
-						</span>
-						<span th:text="${topic.posts.size() - 1}">8</span>
+							<span th:text="${topic.posts.size() - 1}">8</span>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -66,7 +88,7 @@
 				<p class="fw-bold mb-2" th:text="${user.username}">ログインユーザーの名前</p>
 				<input type="hidden" th:value="${topic.topicNo}" id="topicNo" />
 				<input type="hidden" th:value="${topic.subject}" id="subject" />
-				<textarea rows="2" class="form-control form-control-sm" id="postText"></textarea>
+				<textarea rows="2" class="form-control" id="postText"></textarea>
 				<div th:if="${validationMessage}">
 					<span class="text-danger" th:text="${validationMessage}"></span>
 				</div>

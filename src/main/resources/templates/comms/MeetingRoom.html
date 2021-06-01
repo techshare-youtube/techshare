@@ -103,6 +103,17 @@
 						$(targetId).html(data);
 					});
 				});
+				$(document).on('click', '#postEdit', function() {
+					let target = $(this).data('ts-target');
+					let postText = $(this).parents('#ratingForm').find('textarea[name="postText"]');
+					$(target).toggleClass('d-none');
+					postText.toggleClass('readonly').toggleClass('p-0');
+					if (postText.attr('readonly')) {
+						postText.removeAttr('readonly');
+					} else {
+						postText.attr('readonly', 'readonly');
+					}
+				});
 			});
 			</script>
 		</div>		
