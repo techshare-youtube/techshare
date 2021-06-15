@@ -49,6 +49,7 @@ public class ProfileController {
 			profileService.editProfile(profileEditForm, user);
 		} catch (Exception e) {
 			// TODO エラーページへ遷移
+			System.out.println(e.getLocalizedMessage());
 			return "profile/Profile.html";
 		}
 		

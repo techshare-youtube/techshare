@@ -27,7 +27,7 @@
 		<div class="d-flex border-bottom mt-3" th:each="post : ${topic.posts}">
 			<div class="me-3">
 				<img src="../static/img/anonymous.png" style="width: 64px;"
-					th:src="${post.author.profileImage.encodedString()}"/>
+					th:src="${post.author.profileImage.encodedString}"/>
 			</div>
 			<div class="flex-grow-1">
 				<form id="ratingForm" th:action="@{/comms/PostRating.do}" method="post" 
@@ -82,7 +82,7 @@
 		<div class="d-flex mt-3">
 			<div class="me-3">
 				<img src="../static/img/anonymous.png" style="width: 64px;"
-					th:src="${user.profileImage.encodedString()}"/>
+					th:src="${user.profileImage.encodedString}"/>
 			</div>
 			<form id="ajaxForm" class="flex-grow-1" th:action="@{/comms/AppendPost.do}" method="post">
 				<p class="fw-bold mb-2" th:text="${user.username}">ログインユーザーの名前</p>

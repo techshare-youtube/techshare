@@ -22,7 +22,7 @@
 				<span th:text="${#authentication.principal.username}">Username</span>
 				<!-- 画像 -->
 				<img class="profile-photo my-2" alt="Profile"
-					th:src="${user.profileImage.encodedString()}" />
+					th:src="${user.profileImage.encodedString}" />
 				<!-- E-Mail -->
 				<span th:text="${user.email}">XXXXXX@mydomain.com</span>
 				<hr />

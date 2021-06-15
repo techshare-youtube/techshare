@@ -34,12 +34,12 @@
 		    #{empNo},
 		    #{deptCd},
 		    #{posCd},
-		    #{imageFile.fileName}
+		    #{imageFile.encodedString}
 		) ON DUPLICATE KEY UPDATE 
 		    NAME         =  #{username},
 		    DEPT_CD      =  #{deptCd},
 		    POS_CD       =  #{posCd},
-		    PROFILE_IMG  =  #{imageFile.fileName}
+		    PROFILE_IMG  =  #{imageFile.encodedString}
 	]]>
 	</insert>
 
@@ -232,7 +232,7 @@
 		<result property="deptName" column="DEPT_NM" />
 		<result property="posName" column="POS_NM" />
 		<association property="profileImage" javaType="com.rugbyaholic.techshare.common.ImageFile">
-			<result property="fileName" column="PROFILE_IMG" />
+			<result property="encodedString" column="PROFILE_IMG" />
 		</association>
 		<!-- AE 2020.02.04 VOL007 -->
 		<collection property="roles" ofType="com.rugbyaholic.techshare.common.Option">
@@ -245,7 +245,7 @@
 	<![CDATA[
 		UPDATE  USERS
 		SET     PASSWORD     =  #{password},
-		        PROFILE_IMG  =  #{profileImage.fileName}
+		        PROFILE_IMG  =  #{profileImage.encodedString}
 		WHERE   ID           =  #{id}
 	]]>
 	</update>
@@ -330,7 +330,7 @@
 	<insert id="registerInitialUser" useGeneratedKeys="true" keyProperty="id">
 	<![CDATA[
 		INSERT INTO USERS (EMAIL, AVF, NAME, PASSWORD, LOCKED, EXPIRED, EMP_NO, DEPT_CD, POS_CD, PROFILE_IMG)
-		VALUES (#{email}, CURDATE(), #{username}, #{password}, 0, 0, #{empNo}, '0000000', '0000', 'src/main/resources/static/img/anonymous.png')
+		VALUES (#{email}, CURDATE(), #{username}, #{password}, 0, 0, #{empNo}, '0000000', '0000', #{profileImage.encodedString})
 	]]>
 	</insert>
 	
