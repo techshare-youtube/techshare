@@ -3,13 +3,21 @@ package com.rugbyaholic.techshare.common;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 public class ImageFile {
 	
 	private String fileName;
+	
+	private String encodedString;
+	
+	public void setEncodedString(String encodedString) {
+		this.encodedString = encodedString;
+	}
 
 	public String getFileName() {
 		return fileName;
@@ -19,14 +27,22 @@ public class ImageFile {
 		this.fileName = fileName;
 	}
 	
+	public void encode(MultipartFile multipartFile) throws IllegalStateException, IOException {
+		fileName = multipartFile.getOriginalFilename();
+		multipartFile.transferTo(Paths.get(multipartFile.getOriginalFilename()));
+	}
+	
 	/**
 	 * BASE64でエンコードしたファイルデータを文字列で返す。
 	 * @return
 	 */
-	public String encodedString() {
+	public String getEncodedString() {
+		if(StringUtils.hasText(encodedString)) {
+			return encodedString;
+		}
 		
 		if (!StringUtils.hasText(fileName)) {
-			fileName = "src/main/resources/static/img/anonymous.png";
+			fileName = getClass().getResource("anonymous.png").getPath();
 		}
 		File imageFile = new File(fileName);
 		
@@ -43,6 +59,13 @@ public class ImageFile {
 			return "";
 		}
 		
-		return base64String.toString();
+		if (!fileName.equals(getClass().getResource("anonymous.png").getPath())) {
+			File file = new File(fileName);
+			if (file.exists()) {
+				file.delete();
+			}
+		}
+		encodedString = base64String.toString();
+		return encodedString;
 	}
 }

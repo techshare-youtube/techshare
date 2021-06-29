@@ -16,3 +16,6 @@ textarea {
 	background: transparent;
 	border: 0;
 }
+label:hover {
+	cursor: pointer;
+}

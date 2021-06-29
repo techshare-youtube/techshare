@@ -22,7 +22,7 @@
 				<span th:text="${#authentication.principal.username}">Username</span>
 				<!-- 画像 -->
 				<img class="profile-photo my-2" alt="Profile"
-					th:src="${user.profileImage.encodedString()}" />
+					th:src="${user.profileImage.encodedString}" />
 				<!-- E-Mail -->
 				<span th:text="${user.email}">XXXXXX@mydomain.com</span>
 				<hr />
@@ -43,6 +43,9 @@
 				</li>
 				<li class="nav-item border-bottom">
 					<a th:href="@{/comms/MeetingRoom.html}" class="nav-link text-dark py-3">電子会議室</a>
+				</li>
+				<li class="nav-item border-bottom">
+					<a th:href="@{/manage/sys/fs/DirectoryViewer.html}" class="nav-link text-dark py-3">ファイル共有</a>
 				</li>
 			</ul>
 		</div>

@@ -128,7 +128,7 @@
 				<result property="empNo" column="postCreatedBy" />
 				<result property="username" column="postCreatedUsername" />
 				<association property="profileImage" javaType="com.rugbyaholic.techshare.common.ImageFile">
-					<result property="fileName" column="postCreatedUserImage" />
+					<result property="encodedString" column="postCreatedUserImage" />
 				</association>
 			</association>
 			<collection property="ratings" ofType="com.rugbyaholic.techshare.comms.PostRating">

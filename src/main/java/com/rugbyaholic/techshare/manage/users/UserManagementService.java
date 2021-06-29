@@ -1,6 +1,5 @@
 package com.rugbyaholic.techshare.manage.users;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rugbyaholic.techshare.auth.AuthenticatedUser;
-import com.rugbyaholic.techshare.auth.account.ProfileService;
 import com.rugbyaholic.techshare.common.ImageFile;
 import com.rugbyaholic.techshare.common.repositories.CodeRepository;
 import com.rugbyaholic.techshare.common.repositories.NumberingRepository;
 import com.rugbyaholic.techshare.common.repositories.UserRepository;
-import com.rugbyaholic.techshare.common.util.WritableFile;
 
 @Service
 public class UserManagementService {
@@ -48,13 +45,9 @@ public class UserManagementService {
 		}
 		// プロフィール画像の保存
 		MultipartFile uploadFile = form.getProfileImage();
-		String filePath = ProfileService.PROFILE_IMAGE_DEST + form.getEmpNo() + File.separator;
 		if (!uploadFile.isEmpty()) {
-			WritableFile writableFile = new WritableFile(uploadFile);
-			writableFile.deleteAndWrite(filePath);
-			// フォームオブジェクトが持つ画像情報を更新
 			ImageFile imageFile = new ImageFile();
-			imageFile.setFileName(filePath + uploadFile.getOriginalFilename());
+			imageFile.encode(uploadFile);
 			form.setImageFile(imageFile);
 		} else {
 			form.setImageFile(form.getUser().getProfileImage());

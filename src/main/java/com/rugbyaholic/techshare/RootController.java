@@ -44,7 +44,7 @@ public class RootController {
 			service.registerInitialUser(email, password);
 			
 		} catch(Exception ex) {
-			
+			System.out.println(ex.getLocalizedMessage());
 			return "Login.html";
 		}
 		
