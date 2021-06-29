@@ -62,12 +62,56 @@
 				</button>
 			</div>
 		</nav>
-		<div class="container-fluid">
-			<div class="row my-3">
-				<h4 class="col col-12">サーバー情報</h4>
+		<div class="container-fluid mb-2">
+			<div class="row">
+				<h5 class="m-0 my-3">文書管理システム</h5>
 			</div>
-			
 		</div>
+		<form th:action="@{/manage/sys/fs/download.do}" method="post" 
+			class="flex-grow-1 container-fluid d-flex flex-column overflow-auto justify-content-start">
+			<div class="row py-2 border-top">
+				<div class="col col-12 d-flex">
+					<div class="pe-2">
+						<button type="button" class="btn btn-secondary btn-sm">
+							<span>フォルダ追加</span>
+						</button>
+					</div>
+					<div class="pe-2">
+						<button type="button" class="btn btn-secondary btn-sm">
+							<span>アップロード</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="row flex-grow-1 overflow-auto py-1 border-top"
+				th:with="parent = ${currentDirectory.parentFile}">
+				<div class="col col-12">
+					<div th:if="${parent != null && parent.exists()}" class="py-1">
+						<a th:href="|@{/manage/sys/fs/MoveDirectory.do(to=${parent.absolutePath})}|" class="link-dark">
+							<i class="bi bi-reply-fill"></i>
+						</a>
+					</div>
+					<div th:each="file : ${currentDirectory.listFiles}" th:unless="${file.hidden}" class="py-1">
+						<div th:if="${file.directory}" class="d-flex">
+							<div class="pe-3">
+								<i class="bi bi-folder"></i>
+							</div>
+							<a th:href="|@{/manage/sys/fs/MoveDirectory.do(to=${file.absolutePath})}|" th:text="${file.name}"
+								class="link-dark"></a>
+						</div>
+						<div th:if="${file.file}" class="d-flex">
+							<div class="pe-3">
+								<i class="bi bi-file-earmark-text"></i>
+							</div>
+							<label th:for="|download${file.name}|" th:text="${file.name}"
+								class="btn btn-link link-danger p-0"></label>
+							<input type="submit" name="target" th:value="${file.absolutePath}"
+								th:id="|download${file.name}|" class="d-none" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
 	</div>
 </body>
 </html>

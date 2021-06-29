@@ -1,9 +1,9 @@
 CREATE TABLE `NUMBERING_LEDGER` (
-  `NUMBERING_CD` varchar(3) NOT NULL COMMENT '番号体系コード',
-  `AVAIL_YEAR` varchar(4) NOT NULL COMMENT '有効年度',
-  `NEXTNO` decimal(9,0) DEFAULT NULL COMMENT '次番号',
-  `DIGITS` decimal(9,0) DEFAULT NULL COMMENT '桁数',
-  `UPDUSR` bigint(9) unsigned zerofill DEFAULT NULL COMMENT '更新者ＩＤ',
-  `UPDDATE` date DEFAULT NULL COMMENT '更新日時',
+  `NUMBERING_CD` varchar(3) NOT NULL,
+  `AVAIL_YEAR` varchar(4) NOT NULL,
+  `NEXTNO` decimal(9,0) DEFAULT NULL,
+  `DIGITS` decimal(9,0) DEFAULT NULL,
+  `UPDUSR` bigint(9) unsigned zerofill DEFAULT NULL,
+  `UPDDATE` date DEFAULT NULL,
   PRIMARY KEY (`NUMBERING_CD`,`AVAIL_YEAR`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='採番マスタ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
