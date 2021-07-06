@@ -27,14 +27,58 @@
 			<div class="row">
 				<div class="col col-12 d-flex">
 					<div class="me-2">
-						<button class="btn btn-secondary btn-sm shadow-sm">
+						<button class="btn btn-secondary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#appendFolderDialog">
 							<span>フォルダ追加</span>
 						</button>
 					</div>
 					<div class="me-2">
-						<button class="btn btn-secondary btn-sm shadow-sm">
+						<button class="btn btn-secondary btn-sm shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadDialog">
 							<span>アップロード</span>
 						</button>
+					</div>
+				</div>
+			</div>
+			<!-- フォルダ作成ダイアログ -->
+			<div class="modal fade" id="appendFolderDialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">フォルダ作成</h5>
+							<button type="button" data-bs-dismiss="modal" class="btn btn-close"></button>
+						</div>
+						<div class="modal-body">
+							<form th:action="@{/manage/sys/fs/AppendFolder.do}" method="POST">
+								<input type="hidden" th:value="${currentDirectory.absolutePath}" name="currentDirectory" />
+								<div class="mb-3">
+									<label for="folderName" class="form-label">フォルダ名</label>
+									<input type="text" class="form-control form-control-sm" name="folderName" id="folderName"
+										maxlength="32" />
+								</div>
+								<button class="btn btn-success btn-sm shadow-sm">作成</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- ファイルアップロードダイアログ -->
+			<div class="modal fade" id="uploadDialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">ファイルアップロード</h5>
+							<button type="button" data-bs-dismiss="modal" class="btn btn-close"></button>
+						</div>
+						<div class="modal-body">
+							<form th:action="@{/manage/sys/fs/Upload.do}" method="POST" enctype="multipart/form-data"
+								th:object="${uploadForm}">
+								<input type="hidden" th:field="*{path}" />
+								<div class="mb-3">
+									<label for="multipartFile" class="form-label">ファイルを選択してください</label>
+									<input type="file" class="form-control form-control-sm" th:field="*{multipartFile}" />
+								</div>
+								<button class="btn btn-success btn-sm shadow-sm">アップロード</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -49,7 +93,8 @@
 								th:text="${file.name}"></a>
 						</div>
 						<div th:if="${file.file}">
-							<span th:text="${file.name}"></span>
+							<a th:href="@{/manage/sys/fs/Download.do(target=${file.absolutePath})}"
+								th:text="${file.name}" class="link-success"></a>
 						</div>
 					</div>
 				</div>
